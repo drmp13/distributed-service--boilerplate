@@ -1,0 +1,74 @@
+{
+  "name": "hapi-microservice-template",
+  "version": "1.0.0",
+  "description": "Hapi.js Template by Dwi Rizki Manggala Putra",
+  "author": "Dwi Rizki Manggala Putra <drizkimp@gmail.com>",
+  "maintainers": [
+    {
+      "name": "Dwi Rizki Manggala Putra",
+      "email": "drizkimp@gmail.com",
+      "url": "https://drmp13.github.io"
+    }
+  ],
+  "keywords": [
+    "HAPI",
+    "hapi",
+    "hapijs",
+    "hapi-swagger",
+    "hapi server",
+    "api",
+    "node.js",
+    "hapi.js",
+    "Docker",
+    "Mocha",
+    "Chai"
+  ],
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon server.js",
+    "test": "NODE_ENV=test mocha",
+    "dev": "nodemon server.js",
+    "prod": "NODE_ENV=production && forever server.js"
+  },
+  "dependencies": {
+    "@hapi/hapi": "^20.2.1",
+    "@hapi/glue": "^8.0.0",
+    "@hapi/jwt": "^2.1.0",
+    "@hapi/inert": "^6.0.5",
+    "@hapi/vision": "^6.1.0",
+    "@hapi/good": "^9.0.1",
+    "@hapi/hoek": "^9.2.1",
+    "@hapi/boom": "^9.1.4",
+    "@hapi/good-squeeze": "^6.0.0",
+    "@hapi/good-console": "^9.0.1",
+    "hapi-swagger": "^14.2.5",
+    "jsonwebtoken": "^8.5.1",
+    "joi": "^17.6.0",
+    "confidence": "^5.0.1",
+    "module-alias": "^2.2.0",
+    "dotenv": "^16.0.0",
+    "config": "^3.3.7",
+    "axios": "^0.26.0",
+    "sequelize": "^6.16.1",
+    "sequelize-cli": "^6.4.1",
+    "pg": "^8.7.3",
+    "mongoose": "^6.2.2",
+    "mocha": "^9.2.0",
+    "nodemailer": "^6.7.2",
+    "amqplib": "^0.8.0",
+    "handlebars": "^4.7.7",
+    "deasync": "^0.1.24"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  },
+  "_moduleAliases": {
+    "@root": ".",
+    "@config": "config",
+    "@modules": "app/modules",
+    "@lib": "lib",
+    "@rpc": "lib/rpc",
+    "@connection": "lib/connection",
+    "@authentication": "lib/authentication"
+  }
+}

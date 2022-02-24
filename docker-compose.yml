@@ -1,0 +1,138 @@
+version: '2.1'
+services:
+  template_service:
+    container_name: template_service
+    depends_on:
+      template_service_db:
+        condition: service_healthy
+      template_service_db2:
+        condition: service_healthy
+    build: ./TEMPLATE_SERVICE
+    command:  'npm start'
+    volumes:
+       - ./TEMPLATE_SERVICE:/usr/src/app
+       - /usr/src/app/node_modules/
+    restart: always
+    ports:
+      - "${SERVICE_TEMPLATE__API__EXPOSE_PORT}:${GLOBAL__SERVICE_API__PORT}"
+    expose:
+      - "${SERVICE_TEMPLATE__API__EXPOSE_PORT}"
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - EXPOSE_PORT=${SERVICE_TEMPLATE__API__EXPOSE_PORT}
+      - EXPOSE_URL=${SERVICE_TEMPLATE__API__EXPOSE_URL}
+      - EXPOSE_PROTOCOL=${SERVICE_TEMPLATE__API__EXPOSE_PROTOCOL}
+      - PORT=${GLOBAL__SERVICE_API__PORT}
+      - JWT_SECRET=${JWT_SECRET}
+      - DATABASE_PG__GLOBAL__PORT=${GLOBAL__SERVICE_DB_PG__PORT}
+      - DATABASE_PG__DEFAULT__HOST=${SERVICE_TEMPLATE__DATABASE_PG__HOST}
+      - DATABASE_PG__DEFAULT__USER=${SERVICE_TEMPLATE__DATABASE_PG__USER}
+      - DATABASE_PG__DEFAULT__PASS=${SERVICE_TEMPLATE__DATABASE_PG__PASS}
+      - DATABASE_PG__DEFAULT__PORT=${SERVICE_TEMPLATE__DATABASE_PG__PORT}
+      - DATABASE_PG__DEFAULT__DB=${SERVICE_TEMPLATE__DATABASE_PG__DB}
+      - DATABASE_PG__SECOND__HOST=${SERVICE_TEMPLATE__DATABASE_PG2__HOST}
+      - DATABASE_PG__SECOND__USER=${SERVICE_TEMPLATE__DATABASE_PG2__USER}
+      - DATABASE_PG__SECOND__PASS=${SERVICE_TEMPLATE__DATABASE_PG2__PASS}
+      - DATABASE_PG__SECOND__PORT=${SERVICE_TEMPLATE__DATABASE_PG2__PORT}
+      - DATABASE_PG__SECOND__DB=${SERVICE_TEMPLATE__DATABASE_PG2__DB}
+      - DATABASE_MONGO__GLOBAL__PORT=${GLOBAL__SERVICE_DB_MONGO__PORT}
+      - DATABASE_MONGO__MAILER__HOST=${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__HOST}
+      - DATABASE_MONGO__MAILER__USER=${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__USER}
+      - DATABASE_MONGO__MAILER__PASS=${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__PASS}
+      - DATABASE_MONGO__MAILER__PORT=${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__PORT}
+      - DATABASE_MONGO__MAILER__DB=${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__DB}
+      - MESSAGE_BROKER__HOST=${SERVICE_TEMPLATE__MESSAGE_BROKER__HOST}
+      - MESSAGE_BROKER__PORT=${SERVICE_TEMPLATE__MESSAGE_BROKER__PORT}
+      - MESSAGE_BROKER__USER=${SERVICE_TEMPLATE__MESSAGE_BROKER__USER}
+      - MESSAGE_BROKER__PASS=${SERVICE_TEMPLATE__MESSAGE_BROKER__PASS}
+    networks:
+      PROJECT_TEMPLATE_NETWORK:
+        ipv4_address: ${SERVICE_TEMPLATE__API__HOST}
+  template_service_db:
+    container_name: 'template_service_db'
+    image: postgres:9.5
+    environment:
+      POSTGRES_USER: ${SERVICE_TEMPLATE__DATABASE_PG__USER}
+      POSTGRES_PASSWORD: ${SERVICE_TEMPLATE__DATABASE_PG__PASS}
+      POSTGRES_DB: ${SERVICE_TEMPLATE__DATABASE_PG__DB}
+      PGDATA: /data/postgres
+    volumes:
+       - ./TEMPLATE_DB/DATA:/data/postgres
+       - ./TEMPLATE_DB/DUMP:/docker-entrypoint-initdb.d/
+    ports:
+      - "${SERVICE_TEMPLATE__DATABASE_PG__PORT}:${GLOBAL__SERVICE_DB_PG__PORT}"
+    expose:
+      - "${SERVICE_TEMPLATE__DATABASE_PG__PORT}"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${SERVICE_TEMPLATE__DATABASE_PG__USER} -d ${SERVICE_TEMPLATE__DATABASE_PG__DB}"]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+    networks:
+      PROJECT_TEMPLATE_NETWORK:
+        ipv4_address: ${SERVICE_TEMPLATE__DATABASE_PG__HOST}
+  template_service_db2:
+    container_name: 'template_service_db2'
+    image: postgres:9.5
+    environment:
+      POSTGRES_USER: ${SERVICE_TEMPLATE__DATABASE_PG2__USER}
+      POSTGRES_PASSWORD: ${SERVICE_TEMPLATE__DATABASE_PG2__PASS}
+      POSTGRES_DB: ${SERVICE_TEMPLATE__DATABASE_PG2__DB}
+      PGDATA: /data/postgres
+    volumes:
+       - ./TEMPLATE_DB2/DATA:/data/postgres
+       - ./TEMPLATE_DB2/DUMP:/docker-entrypoint-initdb.d/
+    ports:
+      - "${SERVICE_TEMPLATE__DATABASE_PG2__PORT}:${GLOBAL__SERVICE_DB_PG__PORT}"
+    expose:
+      - "${SERVICE_TEMPLATE__DATABASE_PG2__PORT}"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${SERVICE_TEMPLATE__DATABASE_PG2__USER} -d ${SERVICE_TEMPLATE__DATABASE_PG2__DB}"]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+    networks:
+      PROJECT_TEMPLATE_NETWORK:
+        ipv4_address: ${SERVICE_TEMPLATE__DATABASE_PG2__HOST}
+  service_mongo_mail:
+    container_name: service_mongo_mail
+    ports:
+      - ${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__PORT}:${GLOBAL__SERVICE_DB_MONGO__PORT}
+    image: mongo:5.0
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__PASS}
+    volumes:
+      - ./MONGO-MAILER/MONGO-CONFIG:/scripts
+      - ./MONGO-MAILER/DATA:/data/db
+    expose:
+      - "${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__PORT}"
+    networks:
+      PROJECT_TEMPLATE_NETWORK:
+        ipv4_address: ${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__HOST}
+  mb_rabbitmq:
+    container_name: 'mb_rabbitmq'
+    image: rabbitmq:3-management-alpine
+    environment:
+            - RABBITMQ_DEFAULT_USER=${SERVICE_TEMPLATE__MESSAGE_BROKER__USER}
+            - RABBITMQ_DEFAULT_PASS=${SERVICE_TEMPLATE__MESSAGE_BROKER__PASS}
+    ports:
+        - ${SERVICE_TEMPLATE__MESSAGE_BROKER__PORT}:${SERVICE_TEMPLATE__MESSAGE_BROKER__PORT}
+        - ${SERVICE_TEMPLATE__MESSAGE_BROKER__PORT_ADMIN}:${SERVICE_TEMPLATE__MESSAGE_BROKER__PORT_ADMIN}
+    expose:
+      - "${SERVICE_TEMPLATE__MESSAGE_BROKER__PORT_ADMIN}"
+    volumes:
+        - ./SERVER_RABBITMQ/DATA/:/var/lib/rabbitmq/
+        - ./SERVER_RABBITMQ/LOG/:/var/log/rabbitmq
+    networks:
+      PROJECT_TEMPLATE_NETWORK:
+        ipv4_address: ${SERVICE_TEMPLATE__MESSAGE_BROKER__HOST}
+
+networks:
+  PROJECT_TEMPLATE_NETWORK:
+    name: PROJECT_TEMPLATE_NETWORK
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 99.99.9.0/24
