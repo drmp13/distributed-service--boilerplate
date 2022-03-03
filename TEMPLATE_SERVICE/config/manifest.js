@@ -4,6 +4,11 @@ const Confidence = require('confidence');
 const Config = require('@config/_core');
 const Meta = require('@config/meta');
 
+const Fs = require('fs');
+const Path = require('path');
+
+// console.log(Fs.readFileSync(Path.join(__dirname, 'ssl/ca/ca.key'), 'utf8'))
+
 let internals = {
     criteria: {
         env: process.env.NODE_ENV
@@ -15,6 +20,7 @@ internals.manifest = {
     server: {
         host : '0.0.0.0',
         port: Config.get('/application/port'),
+        tls: Config.get('/application/tlsOptions'),
         routes: {
           cors: {
             origin: Config.get('/application/allowedOrigin')

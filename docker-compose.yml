@@ -11,6 +11,7 @@ services:
     command:  'npm start'
     volumes:
        - ./TEMPLATE_SERVICE:/usr/src/app
+       - ${ELK_CERTS_PATH}:/usr/src/app/config/ssl-elk
        - /usr/src/app/node_modules/
     restart: always
     ports:
@@ -45,6 +46,9 @@ services:
       - MESSAGE_BROKER__PORT=${SERVICE_TEMPLATE__MESSAGE_BROKER__PORT}
       - MESSAGE_BROKER__USER=${SERVICE_TEMPLATE__MESSAGE_BROKER__USER}
       - MESSAGE_BROKER__PASS=${SERVICE_TEMPLATE__MESSAGE_BROKER__PASS}
+      - ELK_STACK_APM_SERVER_URL=https://${ELK_APM_SERVER_HOST}:${ELK_APM_SERVER_PORT}
+      - ELK_STACK_ELASTIC_TOKEN=${ELK_APM_SERVER_TOKEN}
+      - ELK_STACK_CA_CERT_PATH=config/ssl-elk/ca/ca.crt
     networks:
       PROJECT_TEMPLATE_NETWORK:
         ipv4_address: ${SERVICE_TEMPLATE__API__HOST}
@@ -127,7 +131,299 @@ services:
     networks:
       PROJECT_TEMPLATE_NETWORK:
         ipv4_address: ${SERVICE_TEMPLATE__MESSAGE_BROKER__HOST}
-
+  cert_setup:
+    image: ${ELK_ELASTICSEARCH_IMAGE}
+    container_name: cert_setup
+    volumes:
+      - ${ELK_CERTS_PATH}:/usr/share/elasticsearch/config/certs
+    user: "0"
+    command: >
+      bash -c '
+        if [ x${ELK_ELASTICSEARCH_PASSWORD} == x ]; then
+          echo "Set the ELK_ELASTICSEARCH_PASSWORD environment variable in the .env file";
+          exit 1;
+        elif [ x${ELK_KIBANA_PASSWORD} == x ]; then
+          echo "Set the ELK_KIBANA_PASSWORD environment variable in the .env file";
+          exit 1;
+        fi;
+        if [ ! -f certs/ca.zip ]; then
+          echo "Creating CA";
+          bin/elasticsearch-certutil ca --silent --pem -out config/certs/ca.zip;
+          unzip config/certs/ca.zip -d config/certs;
+        fi;
+        if [ ! -f certs/certs.zip ]; then
+          echo "Creating certs";
+          echo -ne \
+          "instances:\n"\
+          "  - name: ${ELK_ELASTICSEARCH_NODE_01}\n"\
+          "    dns:\n"\
+          "      - ${ELK_ELASTICSEARCH_NODE_01}\n"\
+          "      - localhost\n"\
+          "    ip:\n"\
+          "      - 127.0.0.1\n"\
+          "  - name: ${ELK_ELASTICSEARCH_NODE_02}\n"\
+          "    dns:\n"\
+          "      - ${ELK_ELASTICSEARCH_NODE_02}\n"\
+          "      - localhost\n"\
+          "    ip:\n"\
+          "      - 127.0.0.1\n"\
+          "  - name: ${ELK_ELASTICSEARCH_NODE_03}\n"\
+          "    dns:\n"\
+          "      - ${ELK_ELASTICSEARCH_NODE_03}\n"\
+          "      - localhost\n"\
+          "    ip:\n"\
+          "      - 127.0.0.1\n"\
+          "  - name: ${ELK_APM_SERVER_NODE}\n"\
+          "    dns:\n"\
+          "      - ${ELK_APM_SERVER_NODE}\n"\
+          "      - localhost\n"\
+          "    ip:\n"\
+          "      - 127.0.0.1\n"\
+          > config/certs/instances.yml;
+          bin/elasticsearch-certutil cert --silent --pem -out config/certs/certs.zip --in config/certs/instances.yml --ca-cert config/certs/ca/ca.crt --ca-key config/certs/ca/ca.key;
+          unzip config/certs/certs.zip -d config/certs;
+        fi;
+        echo "Setting file permissions"
+        chown -R root:root config/certs;
+        find . -type d -exec chmod 750 \{\} \;;
+        find . -type f -exec chmod 640 \{\} \;;
+        echo "Waiting for Elasticsearch availability";
+        until curl -s --cacert config/certs/ca/ca.crt https://${ELK_ELASTICSEARCH_NODE_01}:${ELK_ELASTIC01_PORT} | grep -q "missing authentication credentials"; do sleep 30; done;
+        echo "Setting ${ELK_KIBANA_USERNAME} password";
+        until curl -s -X POST --cacert config/certs/ca/ca.crt -u ${ELK_ELASTICSEARCH_USERNAME}:${ELK_ELASTICSEARCH_PASSWORD} -H "Content-Type: application/json" https://${ELK_ELASTICSEARCH_NODE_01}:${ELK_ELASTIC01_PORT}/_security/user/${ELK_KIBANA_USERNAME}/_password -d "{\"password\":\"${ELK_KIBANA_PASSWORD}\"}" | grep -q "^{}"; do sleep 10; done;
+        echo "All done!";
+      '
+    healthcheck:
+      test: ["CMD-SHELL", "[ -f config/certs/${ELK_ELASTICSEARCH_NODE_01}/${ELK_ELASTICSEARCH_NODE_01}.crt ]"]
+      interval: 1s
+      timeout: 5s
+      retries: 120
+    networks:
+      PROJECT_TEMPLATE_NETWORK:
+        ipv4_address: ${CERT_SETUP_HOST}
+  es01:
+    image: ${ELK_ELASTICSEARCH_IMAGE}
+    container_name: ${ELK_ELASTICSEARCH_NODE_01}
+    depends_on:
+      cert_setup:
+        condition: service_healthy
+    volumes:
+      - ${ELK_CERTS_PATH}:/usr/share/elasticsearch/config/certs
+      - ./ELK/ELASTICSEARCH/${ELK_ELASTICSEARCH_NODE_01}:/usr/share/elasticsearch/data
+    environment:
+      - node.name=${ELK_ELASTICSEARCH_NODE_01}
+      - cluster.name=${ELK_CLUSTER_NAME}
+      - cluster.initial_master_nodes=${ELK_ELASTICSEARCH_NODE_01},${ELK_ELASTICSEARCH_NODE_02},${ELK_ELASTICSEARCH_NODE_03}
+      - discovery.seed_hosts=${ELK_ELASTICSEARCH_NODE_02},${ELK_ELASTICSEARCH_NODE_03}
+      - ELASTIC_PASSWORD=${ELK_ELASTICSEARCH_PASSWORD}
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=true
+      - xpack.security.http.ssl.enabled=true
+      - xpack.security.http.ssl.key=certs/${ELK_ELASTICSEARCH_NODE_01}/${ELK_ELASTICSEARCH_NODE_01}.key
+      - xpack.security.http.ssl.certificate=certs/${ELK_ELASTICSEARCH_NODE_01}/${ELK_ELASTICSEARCH_NODE_01}.crt
+      - xpack.security.http.ssl.certificate_authorities=certs/ca/ca.crt
+      - xpack.security.http.ssl.verification_mode=certificate
+      - xpack.security.transport.ssl.enabled=true
+      - xpack.security.transport.ssl.key=certs/${ELK_ELASTICSEARCH_NODE_01}/${ELK_ELASTICSEARCH_NODE_01}.key
+      - xpack.security.transport.ssl.certificate=certs/${ELK_ELASTICSEARCH_NODE_01}/${ELK_ELASTICSEARCH_NODE_01}.crt
+      - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt
+      - xpack.security.transport.ssl.verification_mode=certificate
+      - xpack.license.self_generated.type=${ELK_LICENSE}
+      - http.cors.enabled=true
+      - http.cors.allow-origin=*
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    mem_limit: ${ELK_ELASTICSEARCH_MEM_LIMIT}
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -s --cacert config/certs/ca/ca.crt https://localhost:9200 | grep -q 'missing authentication credentials'",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 120
+    ports:
+      - ${ELK_ELASTIC01_PORT}:9200
+    networks:
+      PROJECT_TEMPLATE_NETWORK:
+        ipv4_address: ${ELK_ELASTIC01_HOST}
+  es02:
+    image: ${ELK_ELASTICSEARCH_IMAGE}
+    container_name: ${ELK_ELASTICSEARCH_NODE_02}
+    depends_on:
+      - ${ELK_ELASTICSEARCH_NODE_01}
+    volumes:
+      - ${ELK_CERTS_PATH}:/usr/share/elasticsearch/config/certs
+      - ./ELK/ELASTICSEARCH/${ELK_ELASTICSEARCH_NODE_02}:/usr/share/elasticsearch/data
+    environment:
+      - node.name=${ELK_ELASTICSEARCH_NODE_02}
+      - cluster.name=${ELK_CLUSTER_NAME}
+      - cluster.initial_master_nodes=${ELK_ELASTICSEARCH_NODE_01},${ELK_ELASTICSEARCH_NODE_02},${ELK_ELASTICSEARCH_NODE_03}
+      - discovery.seed_hosts=${ELK_ELASTICSEARCH_NODE_01},${ELK_ELASTICSEARCH_NODE_03}
+      - ELASTIC_PASSWORD=${ELK_ELASTICSEARCH_PASSWORD}
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=true
+      - xpack.security.http.ssl.enabled=true
+      - xpack.security.http.ssl.key=certs/${ELK_ELASTICSEARCH_NODE_02}/${ELK_ELASTICSEARCH_NODE_02}.key
+      - xpack.security.http.ssl.certificate=certs/${ELK_ELASTICSEARCH_NODE_02}/${ELK_ELASTICSEARCH_NODE_02}.crt
+      - xpack.security.http.ssl.certificate_authorities=certs/ca/ca.crt
+      - xpack.security.http.ssl.verification_mode=certificate
+      - xpack.security.transport.ssl.enabled=true
+      - xpack.security.transport.ssl.key=certs/${ELK_ELASTICSEARCH_NODE_02}/${ELK_ELASTICSEARCH_NODE_02}.key
+      - xpack.security.transport.ssl.certificate=certs/${ELK_ELASTICSEARCH_NODE_02}/${ELK_ELASTICSEARCH_NODE_02}.crt
+      - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt
+      - xpack.security.transport.ssl.verification_mode=certificate
+      - xpack.license.self_generated.type=${ELK_LICENSE}
+      - http.cors.enabled=true
+      - http.cors.allow-origin=*
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    mem_limit: ${ELK_ELASTICSEARCH_MEM_LIMIT}
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -s --cacert config/certs/ca/ca.crt https://localhost:9200 | grep -q 'missing authentication credentials'",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 120
+    networks:
+      PROJECT_TEMPLATE_NETWORK:
+        ipv4_address: ${ELK_ELASTIC02_HOST}
+  es03:
+    image: ${ELK_ELASTICSEARCH_IMAGE}
+    container_name: ${ELK_ELASTICSEARCH_NODE_03}
+    depends_on:
+      - ${ELK_ELASTICSEARCH_NODE_02}
+    volumes:
+      - ${ELK_CERTS_PATH}:/usr/share/elasticsearch/config/certs
+      - ./ELK/ELASTICSEARCH/${ELK_ELASTICSEARCH_NODE_03}:/usr/share/elasticsearch/data
+    environment:
+      - node.name=${ELK_ELASTICSEARCH_NODE_03}
+      - cluster.name=${ELK_CLUSTER_NAME}
+      - cluster.initial_master_nodes=${ELK_ELASTICSEARCH_NODE_01},${ELK_ELASTICSEARCH_NODE_02},${ELK_ELASTICSEARCH_NODE_03}
+      - discovery.seed_hosts=${ELK_ELASTICSEARCH_NODE_01},${ELK_ELASTICSEARCH_NODE_02}
+      - ELASTIC_PASSWORD=${ELK_ELASTICSEARCH_PASSWORD}
+      - bootstrap.memory_lock=true
+      - xpack.security.enabled=true
+      - xpack.security.http.ssl.enabled=true
+      - xpack.security.http.ssl.key=certs/${ELK_ELASTICSEARCH_NODE_03}/${ELK_ELASTICSEARCH_NODE_03}.key
+      - xpack.security.http.ssl.certificate=certs/${ELK_ELASTICSEARCH_NODE_03}/${ELK_ELASTICSEARCH_NODE_03}.crt
+      - xpack.security.http.ssl.certificate_authorities=certs/ca/ca.crt
+      - xpack.security.http.ssl.verification_mode=certificate
+      - xpack.security.transport.ssl.enabled=true
+      - xpack.security.transport.ssl.key=certs/${ELK_ELASTICSEARCH_NODE_03}/${ELK_ELASTICSEARCH_NODE_03}.key
+      - xpack.security.transport.ssl.certificate=certs/${ELK_ELASTICSEARCH_NODE_03}/${ELK_ELASTICSEARCH_NODE_03}.crt
+      - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt
+      - xpack.security.transport.ssl.verification_mode=certificate
+      - xpack.license.self_generated.type=${ELK_LICENSE}
+      - http.cors.enabled=true
+      - http.cors.allow-origin=*
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    mem_limit: ${ELK_ELASTICSEARCH_MEM_LIMIT}
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -s --cacert config/certs/ca/ca.crt https://localhost:9200 | grep -q 'missing authentication credentials'",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 120
+    networks:
+      PROJECT_TEMPLATE_NETWORK:
+        ipv4_address: ${ELK_ELASTIC03_HOST}
+  kib01:
+    image: kibana:8.0.0
+    container_name: kib01
+    depends_on:
+      es01:
+        condition: service_healthy
+      es02:
+        condition: service_healthy
+      es03:
+        condition: service_healthy
+    ports:
+      - ${ELK_KIBANA_PORT}:5601
+    volumes:
+      - ./ELK/KIBANA:/usr/share/kibana/data
+      - ${ELK_CERTS_PATH}:/usr/share/kibana/config/certs
+    environment:
+      - SERVERNAME=${ELK_KIBANA_SERVERNAME}
+      - ELASTICSEARCH_URL=https://${ELK_ELASTICSEARCH_NODE_01}:${ELK_ELASTIC01_PORT}
+      - ELASTICSEARCH_HOSTS=https://${ELK_ELASTICSEARCH_NODE_01}:${ELK_ELASTIC01_PORT}
+      - ELASTICSEARCH_USERNAME=${ELK_KIBANA_USERNAME}
+      - ELASTICSEARCH_PASSWORD=${ELK_KIBANA_PASSWORD}
+      - ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES=config/certs/ca/ca.crt
+    mem_limit: ${ELK_ELASTICSEARCH_MEM_LIMIT}
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -s -I http://localhost:5601 | grep -q 'HTTP/1.1 302 Found'",
+        ]
+      interval: 10s
+      timeout: 10s
+      retries: 120
+    networks:
+      PROJECT_TEMPLATE_NETWORK:
+        ipv4_address: ${ELK_KIBANA_HOST}
+  apm-server:
+    container_name: ${ELK_APM_SERVER_NODE}
+    image: elastic/apm-server:7.17.1
+    depends_on:
+      es01:
+        condition: service_healthy
+      es02:
+        condition: service_healthy
+      es03:
+        condition: service_healthy
+      kib01:
+        condition: service_healthy
+    cap_add: ["CHOWN", "DAC_OVERRIDE", "SETGID", "SETUID"]
+    cap_drop: ["ALL"]
+    ports:
+    - ${ELK_APM_SERVER_PORT}:8200
+    volumes:
+      - ${ELK_CERTS_PATH}:/etc/certificate
+    command: >
+       apm-server -e
+         -E apm-server.host=0.0.0.0:8200
+         -E apm-server.auth.secret_token=${ELK_APM_SERVER_TOKEN}
+         -E apm-server.ssl.enabled=true
+         -E apm-server.ssl.certificate=/etc/certificate/${ELK_APM_SERVER_NODE}/${ELK_APM_SERVER_NODE}.crt
+         -E apm-server.ssl.key=/etc/certificate/${ELK_APM_SERVER_NODE}/${ELK_APM_SERVER_NODE}.key
+         -E apm-server.rum.enabled=true
+         -E apm-server.kibana.enabled=true
+         -E apm-server.kibana.host=${ELK_KIBANA_HOST}:${ELK_KIBANA_PORT}
+         -E apm-server.kibana.username=${ELK_KIBANA_USERNAME}
+         -E apm-server.kibana.password=${ELK_KIBANA_PASSWORD}
+         -E output.elasticsearch.hosts=["https://${ELK_ELASTICSEARCH_NODE_01}:${ELK_ELASTIC01_PORT}"]
+         -E output.elasticsearch.username=${ELK_ELASTICSEARCH_USERNAME}
+         -E output.elasticsearch.password=${ELK_ELASTICSEARCH_PASSWORD}
+         -E output.elasticsearch.ssl.certificate_authorities=/etc/certificate/ca/ca.crt
+         -E output.elasticsearch.ssl.certificate=/etc/certificate/${ELK_ELASTICSEARCH_NODE_01}/${ELK_ELASTICSEARCH_NODE_01}.crt
+         -E output.elasticsearch.ssl.key=/etc/certificate/${ELK_ELASTICSEARCH_NODE_01}/${ELK_ELASTICSEARCH_NODE_01}.key
+         -E setup.template.settings.index.number_of_replicas=0
+    healthcheck:
+      interval: 10s
+      retries: 12
+      test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:8200/
+    networks:
+      PROJECT_TEMPLATE_NETWORK:
+        ipv4_address: ${ELK_APM_SERVER_HOST}
 networks:
   PROJECT_TEMPLATE_NETWORK:
     name: PROJECT_TEMPLATE_NETWORK

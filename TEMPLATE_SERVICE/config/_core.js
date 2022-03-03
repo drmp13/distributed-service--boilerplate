@@ -41,14 +41,14 @@ internals.config = {
             development: ["*"],
             $default: ["*"]
         },
+        tlsOptions: {
+          key: Fs.readFileSync(Path.join(__dirname, 'ssl/key.pem'), 'utf8'),
+          cert: Fs.readFileSync(Path.join(__dirname, 'ssl/cert.pem'), 'utf8')
+        },
         hostExpose: process.env.EXPOSE_URL,
         portExpose: process.env.EXPOSE_PORT,
         baseUrl: process.env.EXPOSE_PROTOCOL+'://'+process.env.EXPOSE_URL+':'+process.env.EXPOSE_PORT
     },
-    // tlsOptions: {
-    //     key: Fs.readFileSync(Path.join(__dirname, 'ssl/key.pem'), 'utf8'),
-    //     cert: Fs.readFileSync(Path.join(__dirname, 'ssl/cert.pem'), 'utf8')
-    // },
     /* ----------------- Databases -------------- */
     databases: {
       postgres: {
