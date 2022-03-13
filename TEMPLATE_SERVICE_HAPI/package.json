@@ -1,7 +1,7 @@
 {
   "name": "hapi-microservice-template",
   "version": "1.0.0",
-  "description": "Hapi.js Template by Dwi Rizki Manggala Putra",
+  "description": "Hapi.js Boilerplate by Dwi Rizki Manggala Putra",
   "author": "Dwi Rizki Manggala Putra <drizkimp@gmail.com>",
   "maintainers": [
     {

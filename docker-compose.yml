@@ -1,28 +1,28 @@
 version: '2.1'
 services:
-  template_service:
-    container_name: template_service
+  template_service_hapi:
+    container_name: template_service_hapi
     depends_on:
       template_service_db:
         condition: service_healthy
       template_service_db2:
         condition: service_healthy
-    build: ./TEMPLATE_SERVICE
+    build: ./TEMPLATE_SERVICE_HAPI
     command:  'npm start'
     volumes:
-       - ./TEMPLATE_SERVICE:/usr/src/app
+       - ./TEMPLATE_SERVICE_HAPI:/usr/src/app
        - ${ELK_CERTS_PATH}:/usr/src/app/config/ssl-elk
        - /usr/src/app/node_modules/
     restart: always
     ports:
-      - "${SERVICE_TEMPLATE__API__EXPOSE_PORT}:${GLOBAL__SERVICE_API__PORT}"
+      - "${SERVICE_TEMPLATE__HAPI__EXPOSE_PORT}:${GLOBAL__SERVICE_API__PORT}"
     expose:
-      - "${SERVICE_TEMPLATE__API__EXPOSE_PORT}"
+      - "${SERVICE_TEMPLATE__HAPI__EXPOSE_PORT}"
     environment:
       - NODE_ENV=${NODE_ENV}
-      - EXPOSE_PORT=${SERVICE_TEMPLATE__API__EXPOSE_PORT}
-      - EXPOSE_URL=${SERVICE_TEMPLATE__API__EXPOSE_URL}
-      - EXPOSE_PROTOCOL=${SERVICE_TEMPLATE__API__EXPOSE_PROTOCOL}
+      - EXPOSE_PORT=${SERVICE_TEMPLATE__HAPI__EXPOSE_PORT}
+      - EXPOSE_URL=${SERVICE_TEMPLATE__HAPI__EXPOSE_URL}
+      - EXPOSE_PROTOCOL=${SERVICE_TEMPLATE__HAPI__EXPOSE_PROTOCOL}
       - PORT=${GLOBAL__SERVICE_API__PORT}
       - JWT_SECRET=${JWT_SECRET}
       - DATABASE_PG__GLOBAL__PORT=${GLOBAL__SERVICE_DB_PG__PORT}
@@ -51,7 +51,60 @@ services:
       - ELK_STACK_CA_CERT_PATH=config/ssl-elk/ca/ca.crt
     networks:
       PROJECT_TEMPLATE_NETWORK:
-        ipv4_address: ${SERVICE_TEMPLATE__API__HOST}
+        ipv4_address: ${SERVICE_TEMPLATE__HAPI__HOST}
+  template_service_fastify:
+    container_name: template_service_fastify
+    depends_on:
+      template_service_db:
+        condition: service_healthy
+      template_service_db2:
+        condition: service_healthy
+    build: ./TEMPLATE_SERVICE_FASTIFY
+    command:  'npm start'
+    volumes:
+       - ./TEMPLATE_SERVICE_FASTIFY:/usr/src/app
+       - ${ELK_CERTS_PATH}:/usr/src/app/config/ssl-elk
+       - /usr/src/app/node_modules/
+    restart: always
+    ports:
+      - "${SERVICE_TEMPLATE__FASTIFY__EXPOSE_PORT}:${GLOBAL__SERVICE_API__PORT}"
+    expose:
+      - "${SERVICE_TEMPLATE__FASTIFY__EXPOSE_PORT}"
+    environment:
+      - LOG_LEVEL=debug
+      - NODE_ENV=${NODE_ENV}
+      - EXPOSE_PORT=${SERVICE_TEMPLATE__FASTIFY__EXPOSE_PORT}
+      - EXPOSE_URL=${SERVICE_TEMPLATE__FASTIFY__EXPOSE_URL}
+      - EXPOSE_PROTOCOL=${SERVICE_TEMPLATE__FASTIFY__EXPOSE_PROTOCOL}
+      - PORT=${GLOBAL__SERVICE_API__PORT}
+      - JWT_SECRET=${JWT_SECRET}
+      - DATABASE_PG__GLOBAL__PORT=${GLOBAL__SERVICE_DB_PG__PORT}
+      - DATABASE_PG__DEFAULT__HOST=${SERVICE_TEMPLATE__DATABASE_PG__HOST}
+      - DATABASE_PG__DEFAULT__USER=${SERVICE_TEMPLATE__DATABASE_PG__USER}
+      - DATABASE_PG__DEFAULT__PASS=${SERVICE_TEMPLATE__DATABASE_PG__PASS}
+      - DATABASE_PG__DEFAULT__PORT=${SERVICE_TEMPLATE__DATABASE_PG__PORT}
+      - DATABASE_PG__DEFAULT__DB=${SERVICE_TEMPLATE__DATABASE_PG__DB}
+      - DATABASE_PG__SECOND__HOST=${SERVICE_TEMPLATE__DATABASE_PG2__HOST}
+      - DATABASE_PG__SECOND__USER=${SERVICE_TEMPLATE__DATABASE_PG2__USER}
+      - DATABASE_PG__SECOND__PASS=${SERVICE_TEMPLATE__DATABASE_PG2__PASS}
+      - DATABASE_PG__SECOND__PORT=${SERVICE_TEMPLATE__DATABASE_PG2__PORT}
+      - DATABASE_PG__SECOND__DB=${SERVICE_TEMPLATE__DATABASE_PG2__DB}
+      - DATABASE_MONGO__GLOBAL__PORT=${GLOBAL__SERVICE_DB_MONGO__PORT}
+      - DATABASE_MONGO__MAILER__HOST=${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__HOST}
+      - DATABASE_MONGO__MAILER__USER=${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__USER}
+      - DATABASE_MONGO__MAILER__PASS=${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__PASS}
+      - DATABASE_MONGO__MAILER__PORT=${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__PORT}
+      - DATABASE_MONGO__MAILER__DB=${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__DB}
+      - MESSAGE_BROKER__HOST=${SERVICE_TEMPLATE__MESSAGE_BROKER__HOST}
+      - MESSAGE_BROKER__PORT=${SERVICE_TEMPLATE__MESSAGE_BROKER__PORT}
+      - MESSAGE_BROKER__USER=${SERVICE_TEMPLATE__MESSAGE_BROKER__USER}
+      - MESSAGE_BROKER__PASS=${SERVICE_TEMPLATE__MESSAGE_BROKER__PASS}
+      - ELK_STACK_APM_SERVER_URL=https://${ELK_APM_SERVER_HOST}:${ELK_APM_SERVER_PORT}
+      - ELK_STACK_ELASTIC_TOKEN=${ELK_APM_SERVER_TOKEN}
+      - ELK_STACK_CA_CERT_PATH=config/ssl-elk/ca/ca.crt
+    networks:
+      PROJECT_TEMPLATE_NETWORK:
+        ipv4_address: ${SERVICE_TEMPLATE__FASTIFY__HOST}
   template_service_db:
     container_name: 'template_service_db'
     image: postgres:9.5

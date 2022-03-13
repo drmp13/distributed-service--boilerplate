@@ -1,4 +1,5 @@
 
+
 # Hapi-JS Template
 ## Techstack
 
@@ -10,7 +11,7 @@
 | docker | 20.10.12 | Docker provides the ability to package and run an application in a loosely isolated environment called a container. The isolation and security allows you to run many containers simultaneously on a given host. |
 | docker-compose | 1.29.2 | Docker Compose is a tool for defining and running multi-container Docker applications. With Compose, you use a YAML file to configure your application’s services. Then, with a single command, you create and start all the services from your configuration. |
 
-### Hapi.JS Template
+### Hapi Boilerplate
 **Dependencies:**
 |  Dependency Name |  Version |   Description |
 |--|--|--|
@@ -50,6 +51,15 @@
 | Host | 127.0.0.1:5000 |  - |
 | API Basepoint | https://127.0.0.1:5000 |  - |
 | API Documentation | https://127.0.0.1:5000/documentation |  - |
+| Example User (username:password) | tester:tester |  Example user from database to get JWT |
+
+### Fastify Boilerplate
+**Node Information:**
+|  Item Name |  Value |   Description |
+|--|--|--|
+| Host | 127.0.0.1:5001 |  - |
+| API Basepoint | https://127.0.0.1:5001 |  - |
+| API Documentation | https://127.0.0.1:5001/documentation |  - |
 | Example User (username:password) | tester:tester |  Example user from database to get JWT |
 
 ### Dummy Postgres Database 1
@@ -136,5 +146,5 @@
  2. Open your terminal
  3. Go to parent directory (where is the <i>docker-compose.yml</i> file located)
  4. Start all services with command `docker-compose up`
- 5. Check all application functionality by testing all endpoints in the API documentation (https://127.0.0.1:5000/documentation).
+ 5. Check all application functionality by testing all endpoints in the API documentation (https://127.0.0.1:5000/documentation, https://127.0.0.1:5001/documentation).
  6. You can also monitor application performance through the Kibana Dashboard (http://127.0.0.1:5601) using the following credentials => username: `elastic`, password: `elastic1234`.
