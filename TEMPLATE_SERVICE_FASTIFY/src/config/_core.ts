@@ -43,8 +43,8 @@ internals.config = {
         },
         tlsOptions: {
           allowHTTP1: true,
-          key: Fs.readFileSync(Path.join(__dirname, 'ssl/key.pem'), 'utf8'),
-          cert: Fs.readFileSync(Path.join(__dirname, 'ssl/cert.pem'), 'utf8')
+          key: Fs.readFileSync(Path.join('/usr/src/app/certificate/ssl/key.pem'), 'utf8'),
+          cert: Fs.readFileSync(Path.join('/usr/src/app/certificate/ssl/cert.pem'), 'utf8')
         },
         hostExpose: process.env.EXPOSE_URL,
         portExpose: process.env.EXPOSE_PORT,

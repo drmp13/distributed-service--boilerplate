@@ -1,57 +1,57 @@
 version: '2.1'
 services:
-  template_service_hapi:
-    container_name: template_service_hapi
-    depends_on:
-      template_service_db:
-        condition: service_healthy
-      template_service_db2:
-        condition: service_healthy
-    build: ./TEMPLATE_SERVICE_HAPI
-    command:  'npm start'
-    volumes:
-       - ./TEMPLATE_SERVICE_HAPI:/usr/src/app
-       - ${ELK_CERTS_PATH}:/usr/src/app/config/ssl-elk
-       - /usr/src/app/node_modules/
-    restart: always
-    ports:
-      - "${SERVICE_TEMPLATE__HAPI__EXPOSE_PORT}:${GLOBAL__SERVICE_API__PORT}"
-    expose:
-      - "${SERVICE_TEMPLATE__HAPI__EXPOSE_PORT}"
-    environment:
-      - NODE_ENV=${NODE_ENV}
-      - EXPOSE_PORT=${SERVICE_TEMPLATE__HAPI__EXPOSE_PORT}
-      - EXPOSE_URL=${SERVICE_TEMPLATE__HAPI__EXPOSE_URL}
-      - EXPOSE_PROTOCOL=${SERVICE_TEMPLATE__HAPI__EXPOSE_PROTOCOL}
-      - PORT=${GLOBAL__SERVICE_API__PORT}
-      - JWT_SECRET=${JWT_SECRET}
-      - DATABASE_PG__GLOBAL__PORT=${GLOBAL__SERVICE_DB_PG__PORT}
-      - DATABASE_PG__DEFAULT__HOST=${SERVICE_TEMPLATE__DATABASE_PG__HOST}
-      - DATABASE_PG__DEFAULT__USER=${SERVICE_TEMPLATE__DATABASE_PG__USER}
-      - DATABASE_PG__DEFAULT__PASS=${SERVICE_TEMPLATE__DATABASE_PG__PASS}
-      - DATABASE_PG__DEFAULT__PORT=${SERVICE_TEMPLATE__DATABASE_PG__PORT}
-      - DATABASE_PG__DEFAULT__DB=${SERVICE_TEMPLATE__DATABASE_PG__DB}
-      - DATABASE_PG__SECOND__HOST=${SERVICE_TEMPLATE__DATABASE_PG2__HOST}
-      - DATABASE_PG__SECOND__USER=${SERVICE_TEMPLATE__DATABASE_PG2__USER}
-      - DATABASE_PG__SECOND__PASS=${SERVICE_TEMPLATE__DATABASE_PG2__PASS}
-      - DATABASE_PG__SECOND__PORT=${SERVICE_TEMPLATE__DATABASE_PG2__PORT}
-      - DATABASE_PG__SECOND__DB=${SERVICE_TEMPLATE__DATABASE_PG2__DB}
-      - DATABASE_MONGO__GLOBAL__PORT=${GLOBAL__SERVICE_DB_MONGO__PORT}
-      - DATABASE_MONGO__MAILER__HOST=${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__HOST}
-      - DATABASE_MONGO__MAILER__USER=${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__USER}
-      - DATABASE_MONGO__MAILER__PASS=${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__PASS}
-      - DATABASE_MONGO__MAILER__PORT=${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__PORT}
-      - DATABASE_MONGO__MAILER__DB=${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__DB}
-      - MESSAGE_BROKER__HOST=${SERVICE_TEMPLATE__MESSAGE_BROKER__HOST}
-      - MESSAGE_BROKER__PORT=${SERVICE_TEMPLATE__MESSAGE_BROKER__PORT}
-      - MESSAGE_BROKER__USER=${SERVICE_TEMPLATE__MESSAGE_BROKER__USER}
-      - MESSAGE_BROKER__PASS=${SERVICE_TEMPLATE__MESSAGE_BROKER__PASS}
-      - ELK_STACK_APM_SERVER_URL=https://${ELK_APM_SERVER_HOST}:${ELK_APM_SERVER_PORT}
-      - ELK_STACK_ELASTIC_TOKEN=${ELK_APM_SERVER_TOKEN}
-      - ELK_STACK_CA_CERT_PATH=config/ssl-elk/ca/ca.crt
-    networks:
-      PROJECT_TEMPLATE_NETWORK:
-        ipv4_address: ${SERVICE_TEMPLATE__HAPI__HOST}
+  # template_service_hapi:
+  #   container_name: template_service_hapi
+  #   depends_on:
+  #     template_service_db:
+  #       condition: service_healthy
+  #     template_service_db2:
+  #       condition: service_healthy
+  #   build: ./TEMPLATE_SERVICE_HAPI
+  #   command:  'npm start'
+  #   volumes:
+  #      - ./TEMPLATE_SERVICE_HAPI:/usr/src/app
+  #      - ${ELK_CERTS_PATH}:/usr/src/app/config/ssl-elk
+  #      - /usr/src/app/node_modules/
+  #   restart: always
+  #   ports:
+  #     - "${SERVICE_TEMPLATE__HAPI__EXPOSE_PORT}:${GLOBAL__SERVICE_API__PORT}"
+  #   expose:
+  #     - "${SERVICE_TEMPLATE__HAPI__EXPOSE_PORT}"
+  #   environment:
+  #     - NODE_ENV=${NODE_ENV}
+  #     - EXPOSE_PORT=${SERVICE_TEMPLATE__HAPI__EXPOSE_PORT}
+  #     - EXPOSE_URL=${SERVICE_TEMPLATE__HAPI__EXPOSE_URL}
+  #     - EXPOSE_PROTOCOL=${SERVICE_TEMPLATE__HAPI__EXPOSE_PROTOCOL}
+  #     - PORT=${GLOBAL__SERVICE_API__PORT}
+  #     - JWT_SECRET=${JWT_SECRET}
+  #     - DATABASE_PG__GLOBAL__PORT=${GLOBAL__SERVICE_DB_PG__PORT}
+  #     - DATABASE_PG__DEFAULT__HOST=${SERVICE_TEMPLATE__DATABASE_PG__HOST}
+  #     - DATABASE_PG__DEFAULT__USER=${SERVICE_TEMPLATE__DATABASE_PG__USER}
+  #     - DATABASE_PG__DEFAULT__PASS=${SERVICE_TEMPLATE__DATABASE_PG__PASS}
+  #     - DATABASE_PG__DEFAULT__PORT=${SERVICE_TEMPLATE__DATABASE_PG__PORT}
+  #     - DATABASE_PG__DEFAULT__DB=${SERVICE_TEMPLATE__DATABASE_PG__DB}
+  #     - DATABASE_PG__SECOND__HOST=${SERVICE_TEMPLATE__DATABASE_PG2__HOST}
+  #     - DATABASE_PG__SECOND__USER=${SERVICE_TEMPLATE__DATABASE_PG2__USER}
+  #     - DATABASE_PG__SECOND__PASS=${SERVICE_TEMPLATE__DATABASE_PG2__PASS}
+  #     - DATABASE_PG__SECOND__PORT=${SERVICE_TEMPLATE__DATABASE_PG2__PORT}
+  #     - DATABASE_PG__SECOND__DB=${SERVICE_TEMPLATE__DATABASE_PG2__DB}
+  #     - DATABASE_MONGO__GLOBAL__PORT=${GLOBAL__SERVICE_DB_MONGO__PORT}
+  #     - DATABASE_MONGO__MAILER__HOST=${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__HOST}
+  #     - DATABASE_MONGO__MAILER__USER=${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__USER}
+  #     - DATABASE_MONGO__MAILER__PASS=${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__PASS}
+  #     - DATABASE_MONGO__MAILER__PORT=${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__PORT}
+  #     - DATABASE_MONGO__MAILER__DB=${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__DB}
+  #     - MESSAGE_BROKER__HOST=${SERVICE_TEMPLATE__MESSAGE_BROKER__HOST}
+  #     - MESSAGE_BROKER__PORT=${SERVICE_TEMPLATE__MESSAGE_BROKER__PORT}
+  #     - MESSAGE_BROKER__USER=${SERVICE_TEMPLATE__MESSAGE_BROKER__USER}
+  #     - MESSAGE_BROKER__PASS=${SERVICE_TEMPLATE__MESSAGE_BROKER__PASS}
+  #     - ELK_STACK_APM_SERVER_URL=https://${ELK_APM_SERVER_HOST}:${ELK_APM_SERVER_PORT}
+  #     - ELK_STACK_ELASTIC_TOKEN=${ELK_APM_SERVER_TOKEN}
+  #     - ELK_STACK_CA_CERT_PATH=config/ssl-elk/ca/ca.crt
+  #   networks:
+  #     PROJECT_TEMPLATE_NETWORK:
+  #       ipv4_address: ${SERVICE_TEMPLATE__HAPI__HOST}
   template_service_fastify:
     container_name: template_service_fastify
     depends_on:
@@ -63,7 +63,7 @@ services:
     command:  'npm start'
     volumes:
        - ./TEMPLATE_SERVICE_FASTIFY:/usr/src/app
-       - ${ELK_CERTS_PATH}:/usr/src/app/config/ssl-elk
+       - ${ELK_CERTS_PATH}:/usr/src/app/certificate/ssl-elk
        - /usr/src/app/node_modules/
     restart: always
     ports:
@@ -101,7 +101,7 @@ services:
       - MESSAGE_BROKER__PASS=${SERVICE_TEMPLATE__MESSAGE_BROKER__PASS}
       - ELK_STACK_APM_SERVER_URL=https://${ELK_APM_SERVER_HOST}:${ELK_APM_SERVER_PORT}
       - ELK_STACK_ELASTIC_TOKEN=${ELK_APM_SERVER_TOKEN}
-      - ELK_STACK_CA_CERT_PATH=config/ssl-elk/ca/ca.crt
+      - ELK_STACK_CA_CERT_PATH=ssl-elk/ca/ca.crt
     networks:
       PROJECT_TEMPLATE_NETWORK:
         ipv4_address: ${SERVICE_TEMPLATE__FASTIFY__HOST}
@@ -151,39 +151,39 @@ services:
     networks:
       PROJECT_TEMPLATE_NETWORK:
         ipv4_address: ${SERVICE_TEMPLATE__DATABASE_PG2__HOST}
-  service_mongo_mail:
-    container_name: service_mongo_mail
-    ports:
-      - ${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__PORT}:${GLOBAL__SERVICE_DB_MONGO__PORT}
-    image: mongo:5.0
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: ${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__USER}
-      MONGO_INITDB_ROOT_PASSWORD: ${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__PASS}
-    volumes:
-      - ./MONGO-MAILER/MONGO-CONFIG:/scripts
-      - ./MONGO-MAILER/DATA:/data/db
-    expose:
-      - "${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__PORT}"
-    networks:
-      PROJECT_TEMPLATE_NETWORK:
-        ipv4_address: ${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__HOST}
-  mb_rabbitmq:
-    container_name: 'mb_rabbitmq'
-    image: rabbitmq:3-management-alpine
-    environment:
-            - RABBITMQ_DEFAULT_USER=${SERVICE_TEMPLATE__MESSAGE_BROKER__USER}
-            - RABBITMQ_DEFAULT_PASS=${SERVICE_TEMPLATE__MESSAGE_BROKER__PASS}
-    ports:
-        - ${SERVICE_TEMPLATE__MESSAGE_BROKER__PORT}:${SERVICE_TEMPLATE__MESSAGE_BROKER__PORT}
-        - ${SERVICE_TEMPLATE__MESSAGE_BROKER__PORT_ADMIN}:${SERVICE_TEMPLATE__MESSAGE_BROKER__PORT_ADMIN}
-    expose:
-      - "${SERVICE_TEMPLATE__MESSAGE_BROKER__PORT_ADMIN}"
-    volumes:
-        - ./SERVER_RABBITMQ/DATA/:/var/lib/rabbitmq/
-        - ./SERVER_RABBITMQ/LOG/:/var/log/rabbitmq
-    networks:
-      PROJECT_TEMPLATE_NETWORK:
-        ipv4_address: ${SERVICE_TEMPLATE__MESSAGE_BROKER__HOST}
+  # service_mongo_mail:
+  #   container_name: service_mongo_mail
+  #   ports:
+  #     - ${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__PORT}:${GLOBAL__SERVICE_DB_MONGO__PORT}
+  #   image: mongo:5.0
+  #   environment:
+  #     MONGO_INITDB_ROOT_USERNAME: ${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__USER}
+  #     MONGO_INITDB_ROOT_PASSWORD: ${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__PASS}
+  #   volumes:
+  #     - ./MONGO-MAILER/MONGO-CONFIG:/scripts
+  #     - ./MONGO-MAILER/DATA:/data/db
+  #   expose:
+  #     - "${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__PORT}"
+  #   networks:
+  #     PROJECT_TEMPLATE_NETWORK:
+  #       ipv4_address: ${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__HOST}
+  # mb_rabbitmq:
+  #   container_name: 'mb_rabbitmq'
+  #   image: rabbitmq:3-management-alpine
+  #   environment:
+  #           - RABBITMQ_DEFAULT_USER=${SERVICE_TEMPLATE__MESSAGE_BROKER__USER}
+  #           - RABBITMQ_DEFAULT_PASS=${SERVICE_TEMPLATE__MESSAGE_BROKER__PASS}
+  #   ports:
+  #       - ${SERVICE_TEMPLATE__MESSAGE_BROKER__PORT}:${SERVICE_TEMPLATE__MESSAGE_BROKER__PORT}
+  #       - ${SERVICE_TEMPLATE__MESSAGE_BROKER__PORT_ADMIN}:${SERVICE_TEMPLATE__MESSAGE_BROKER__PORT_ADMIN}
+  #   expose:
+  #     - "${SERVICE_TEMPLATE__MESSAGE_BROKER__PORT_ADMIN}"
+  #   volumes:
+  #       - ./SERVER_RABBITMQ/DATA/:/var/lib/rabbitmq/
+  #       - ./SERVER_RABBITMQ/LOG/:/var/log/rabbitmq
+  #   networks:
+  #     PROJECT_TEMPLATE_NETWORK:
+  #       ipv4_address: ${SERVICE_TEMPLATE__MESSAGE_BROKER__HOST}
   cert_setup:
     image: ${ELK_ELASTICSEARCH_IMAGE}
     container_name: cert_setup
@@ -254,229 +254,229 @@ services:
     networks:
       PROJECT_TEMPLATE_NETWORK:
         ipv4_address: ${CERT_SETUP_HOST}
-  es01:
-    image: ${ELK_ELASTICSEARCH_IMAGE}
-    container_name: ${ELK_ELASTICSEARCH_NODE_01}
-    depends_on:
-      cert_setup:
-        condition: service_healthy
-    volumes:
-      - ${ELK_CERTS_PATH}:/usr/share/elasticsearch/config/certs
-      - ./ELK/ELASTICSEARCH/${ELK_ELASTICSEARCH_NODE_01}:/usr/share/elasticsearch/data
-    environment:
-      - node.name=${ELK_ELASTICSEARCH_NODE_01}
-      - cluster.name=${ELK_CLUSTER_NAME}
-      - cluster.initial_master_nodes=${ELK_ELASTICSEARCH_NODE_01},${ELK_ELASTICSEARCH_NODE_02},${ELK_ELASTICSEARCH_NODE_03}
-      - discovery.seed_hosts=${ELK_ELASTICSEARCH_NODE_02},${ELK_ELASTICSEARCH_NODE_03}
-      - ELASTIC_PASSWORD=${ELK_ELASTICSEARCH_PASSWORD}
-      - bootstrap.memory_lock=true
-      - xpack.security.enabled=true
-      - xpack.security.http.ssl.enabled=true
-      - xpack.security.http.ssl.key=certs/${ELK_ELASTICSEARCH_NODE_01}/${ELK_ELASTICSEARCH_NODE_01}.key
-      - xpack.security.http.ssl.certificate=certs/${ELK_ELASTICSEARCH_NODE_01}/${ELK_ELASTICSEARCH_NODE_01}.crt
-      - xpack.security.http.ssl.certificate_authorities=certs/ca/ca.crt
-      - xpack.security.http.ssl.verification_mode=certificate
-      - xpack.security.transport.ssl.enabled=true
-      - xpack.security.transport.ssl.key=certs/${ELK_ELASTICSEARCH_NODE_01}/${ELK_ELASTICSEARCH_NODE_01}.key
-      - xpack.security.transport.ssl.certificate=certs/${ELK_ELASTICSEARCH_NODE_01}/${ELK_ELASTICSEARCH_NODE_01}.crt
-      - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt
-      - xpack.security.transport.ssl.verification_mode=certificate
-      - xpack.license.self_generated.type=${ELK_LICENSE}
-      - http.cors.enabled=true
-      - http.cors.allow-origin=*
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    mem_limit: ${ELK_ELASTICSEARCH_MEM_LIMIT}
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "curl -s --cacert config/certs/ca/ca.crt https://localhost:9200 | grep -q 'missing authentication credentials'",
-        ]
-      interval: 10s
-      timeout: 10s
-      retries: 120
-    ports:
-      - ${ELK_ELASTIC01_PORT}:9200
-    networks:
-      PROJECT_TEMPLATE_NETWORK:
-        ipv4_address: ${ELK_ELASTIC01_HOST}
-  es02:
-    image: ${ELK_ELASTICSEARCH_IMAGE}
-    container_name: ${ELK_ELASTICSEARCH_NODE_02}
-    depends_on:
-      - ${ELK_ELASTICSEARCH_NODE_01}
-    volumes:
-      - ${ELK_CERTS_PATH}:/usr/share/elasticsearch/config/certs
-      - ./ELK/ELASTICSEARCH/${ELK_ELASTICSEARCH_NODE_02}:/usr/share/elasticsearch/data
-    environment:
-      - node.name=${ELK_ELASTICSEARCH_NODE_02}
-      - cluster.name=${ELK_CLUSTER_NAME}
-      - cluster.initial_master_nodes=${ELK_ELASTICSEARCH_NODE_01},${ELK_ELASTICSEARCH_NODE_02},${ELK_ELASTICSEARCH_NODE_03}
-      - discovery.seed_hosts=${ELK_ELASTICSEARCH_NODE_01},${ELK_ELASTICSEARCH_NODE_03}
-      - ELASTIC_PASSWORD=${ELK_ELASTICSEARCH_PASSWORD}
-      - bootstrap.memory_lock=true
-      - xpack.security.enabled=true
-      - xpack.security.http.ssl.enabled=true
-      - xpack.security.http.ssl.key=certs/${ELK_ELASTICSEARCH_NODE_02}/${ELK_ELASTICSEARCH_NODE_02}.key
-      - xpack.security.http.ssl.certificate=certs/${ELK_ELASTICSEARCH_NODE_02}/${ELK_ELASTICSEARCH_NODE_02}.crt
-      - xpack.security.http.ssl.certificate_authorities=certs/ca/ca.crt
-      - xpack.security.http.ssl.verification_mode=certificate
-      - xpack.security.transport.ssl.enabled=true
-      - xpack.security.transport.ssl.key=certs/${ELK_ELASTICSEARCH_NODE_02}/${ELK_ELASTICSEARCH_NODE_02}.key
-      - xpack.security.transport.ssl.certificate=certs/${ELK_ELASTICSEARCH_NODE_02}/${ELK_ELASTICSEARCH_NODE_02}.crt
-      - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt
-      - xpack.security.transport.ssl.verification_mode=certificate
-      - xpack.license.self_generated.type=${ELK_LICENSE}
-      - http.cors.enabled=true
-      - http.cors.allow-origin=*
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    mem_limit: ${ELK_ELASTICSEARCH_MEM_LIMIT}
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "curl -s --cacert config/certs/ca/ca.crt https://localhost:9200 | grep -q 'missing authentication credentials'",
-        ]
-      interval: 10s
-      timeout: 10s
-      retries: 120
-    networks:
-      PROJECT_TEMPLATE_NETWORK:
-        ipv4_address: ${ELK_ELASTIC02_HOST}
-  es03:
-    image: ${ELK_ELASTICSEARCH_IMAGE}
-    container_name: ${ELK_ELASTICSEARCH_NODE_03}
-    depends_on:
-      - ${ELK_ELASTICSEARCH_NODE_02}
-    volumes:
-      - ${ELK_CERTS_PATH}:/usr/share/elasticsearch/config/certs
-      - ./ELK/ELASTICSEARCH/${ELK_ELASTICSEARCH_NODE_03}:/usr/share/elasticsearch/data
-    environment:
-      - node.name=${ELK_ELASTICSEARCH_NODE_03}
-      - cluster.name=${ELK_CLUSTER_NAME}
-      - cluster.initial_master_nodes=${ELK_ELASTICSEARCH_NODE_01},${ELK_ELASTICSEARCH_NODE_02},${ELK_ELASTICSEARCH_NODE_03}
-      - discovery.seed_hosts=${ELK_ELASTICSEARCH_NODE_01},${ELK_ELASTICSEARCH_NODE_02}
-      - ELASTIC_PASSWORD=${ELK_ELASTICSEARCH_PASSWORD}
-      - bootstrap.memory_lock=true
-      - xpack.security.enabled=true
-      - xpack.security.http.ssl.enabled=true
-      - xpack.security.http.ssl.key=certs/${ELK_ELASTICSEARCH_NODE_03}/${ELK_ELASTICSEARCH_NODE_03}.key
-      - xpack.security.http.ssl.certificate=certs/${ELK_ELASTICSEARCH_NODE_03}/${ELK_ELASTICSEARCH_NODE_03}.crt
-      - xpack.security.http.ssl.certificate_authorities=certs/ca/ca.crt
-      - xpack.security.http.ssl.verification_mode=certificate
-      - xpack.security.transport.ssl.enabled=true
-      - xpack.security.transport.ssl.key=certs/${ELK_ELASTICSEARCH_NODE_03}/${ELK_ELASTICSEARCH_NODE_03}.key
-      - xpack.security.transport.ssl.certificate=certs/${ELK_ELASTICSEARCH_NODE_03}/${ELK_ELASTICSEARCH_NODE_03}.crt
-      - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt
-      - xpack.security.transport.ssl.verification_mode=certificate
-      - xpack.license.self_generated.type=${ELK_LICENSE}
-      - http.cors.enabled=true
-      - http.cors.allow-origin=*
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-    mem_limit: ${ELK_ELASTICSEARCH_MEM_LIMIT}
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "curl -s --cacert config/certs/ca/ca.crt https://localhost:9200 | grep -q 'missing authentication credentials'",
-        ]
-      interval: 10s
-      timeout: 10s
-      retries: 120
-    networks:
-      PROJECT_TEMPLATE_NETWORK:
-        ipv4_address: ${ELK_ELASTIC03_HOST}
-  kib01:
-    image: kibana:8.0.0
-    container_name: kib01
-    depends_on:
-      es01:
-        condition: service_healthy
-      es02:
-        condition: service_healthy
-      es03:
-        condition: service_healthy
-    ports:
-      - ${ELK_KIBANA_PORT}:5601
-    volumes:
-      - ./ELK/KIBANA:/usr/share/kibana/data
-      - ${ELK_CERTS_PATH}:/usr/share/kibana/config/certs
-    environment:
-      - SERVERNAME=${ELK_KIBANA_SERVERNAME}
-      - ELASTICSEARCH_URL=https://${ELK_ELASTICSEARCH_NODE_01}:${ELK_ELASTIC01_PORT}
-      - ELASTICSEARCH_HOSTS=https://${ELK_ELASTICSEARCH_NODE_01}:${ELK_ELASTIC01_PORT}
-      - ELASTICSEARCH_USERNAME=${ELK_KIBANA_USERNAME}
-      - ELASTICSEARCH_PASSWORD=${ELK_KIBANA_PASSWORD}
-      - ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES=config/certs/ca/ca.crt
-    mem_limit: ${ELK_ELASTICSEARCH_MEM_LIMIT}
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "curl -s -I http://localhost:5601 | grep -q 'HTTP/1.1 302 Found'",
-        ]
-      interval: 10s
-      timeout: 10s
-      retries: 120
-    networks:
-      PROJECT_TEMPLATE_NETWORK:
-        ipv4_address: ${ELK_KIBANA_HOST}
-  apm-server:
-    container_name: ${ELK_APM_SERVER_NODE}
-    image: elastic/apm-server:7.17.1
-    depends_on:
-      es01:
-        condition: service_healthy
-      es02:
-        condition: service_healthy
-      es03:
-        condition: service_healthy
-      kib01:
-        condition: service_healthy
-    cap_add: ["CHOWN", "DAC_OVERRIDE", "SETGID", "SETUID"]
-    cap_drop: ["ALL"]
-    ports:
-    - ${ELK_APM_SERVER_PORT}:8200
-    volumes:
-      - ${ELK_CERTS_PATH}:/etc/certificate
-    command: >
-       apm-server -e
-         -E apm-server.host=0.0.0.0:8200
-         -E apm-server.auth.secret_token=${ELK_APM_SERVER_TOKEN}
-         -E apm-server.ssl.enabled=true
-         -E apm-server.ssl.certificate=/etc/certificate/${ELK_APM_SERVER_NODE}/${ELK_APM_SERVER_NODE}.crt
-         -E apm-server.ssl.key=/etc/certificate/${ELK_APM_SERVER_NODE}/${ELK_APM_SERVER_NODE}.key
-         -E apm-server.rum.enabled=true
-         -E apm-server.kibana.enabled=true
-         -E apm-server.kibana.host=${ELK_KIBANA_HOST}:${ELK_KIBANA_PORT}
-         -E apm-server.kibana.username=${ELK_KIBANA_USERNAME}
-         -E apm-server.kibana.password=${ELK_KIBANA_PASSWORD}
-         -E output.elasticsearch.hosts=["https://${ELK_ELASTICSEARCH_NODE_01}:${ELK_ELASTIC01_PORT}"]
-         -E output.elasticsearch.username=${ELK_ELASTICSEARCH_USERNAME}
-         -E output.elasticsearch.password=${ELK_ELASTICSEARCH_PASSWORD}
-         -E output.elasticsearch.ssl.certificate_authorities=/etc/certificate/ca/ca.crt
-         -E output.elasticsearch.ssl.certificate=/etc/certificate/${ELK_ELASTICSEARCH_NODE_01}/${ELK_ELASTICSEARCH_NODE_01}.crt
-         -E output.elasticsearch.ssl.key=/etc/certificate/${ELK_ELASTICSEARCH_NODE_01}/${ELK_ELASTICSEARCH_NODE_01}.key
-         -E setup.template.settings.index.number_of_replicas=0
-    healthcheck:
-      interval: 10s
-      retries: 12
-      test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:8200/
-    networks:
-      PROJECT_TEMPLATE_NETWORK:
-        ipv4_address: ${ELK_APM_SERVER_HOST}
+  # es01:
+  #   image: ${ELK_ELASTICSEARCH_IMAGE}
+  #   container_name: ${ELK_ELASTICSEARCH_NODE_01}
+  #   depends_on:
+  #     cert_setup:
+  #       condition: service_healthy
+  #   volumes:
+  #     - ${ELK_CERTS_PATH}:/usr/share/elasticsearch/config/certs
+  #     - ./ELK/ELASTICSEARCH/${ELK_ELASTICSEARCH_NODE_01}:/usr/share/elasticsearch/data
+  #   environment:
+  #     - node.name=${ELK_ELASTICSEARCH_NODE_01}
+  #     - cluster.name=${ELK_CLUSTER_NAME}
+  #     - cluster.initial_master_nodes=${ELK_ELASTICSEARCH_NODE_01},${ELK_ELASTICSEARCH_NODE_02},${ELK_ELASTICSEARCH_NODE_03}
+  #     - discovery.seed_hosts=${ELK_ELASTICSEARCH_NODE_02},${ELK_ELASTICSEARCH_NODE_03}
+  #     - ELASTIC_PASSWORD=${ELK_ELASTICSEARCH_PASSWORD}
+  #     - bootstrap.memory_lock=true
+  #     - xpack.security.enabled=true
+  #     - xpack.security.http.ssl.enabled=true
+  #     - xpack.security.http.ssl.key=certs/${ELK_ELASTICSEARCH_NODE_01}/${ELK_ELASTICSEARCH_NODE_01}.key
+  #     - xpack.security.http.ssl.certificate=certs/${ELK_ELASTICSEARCH_NODE_01}/${ELK_ELASTICSEARCH_NODE_01}.crt
+  #     - xpack.security.http.ssl.certificate_authorities=certs/ca/ca.crt
+  #     - xpack.security.http.ssl.verification_mode=certificate
+  #     - xpack.security.transport.ssl.enabled=true
+  #     - xpack.security.transport.ssl.key=certs/${ELK_ELASTICSEARCH_NODE_01}/${ELK_ELASTICSEARCH_NODE_01}.key
+  #     - xpack.security.transport.ssl.certificate=certs/${ELK_ELASTICSEARCH_NODE_01}/${ELK_ELASTICSEARCH_NODE_01}.crt
+  #     - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt
+  #     - xpack.security.transport.ssl.verification_mode=certificate
+  #     - xpack.license.self_generated.type=${ELK_LICENSE}
+  #     - http.cors.enabled=true
+  #     - http.cors.allow-origin=*
+  #     - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+  #   mem_limit: ${ELK_ELASTICSEARCH_MEM_LIMIT}
+  #   ulimits:
+  #     memlock:
+  #       soft: -1
+  #       hard: -1
+  #   healthcheck:
+  #     test:
+  #       [
+  #         "CMD-SHELL",
+  #         "curl -s --cacert config/certs/ca/ca.crt https://localhost:9200 | grep -q 'missing authentication credentials'",
+  #       ]
+  #     interval: 10s
+  #     timeout: 10s
+  #     retries: 120
+  #   ports:
+  #     - ${ELK_ELASTIC01_PORT}:9200
+  #   networks:
+  #     PROJECT_TEMPLATE_NETWORK:
+  #       ipv4_address: ${ELK_ELASTIC01_HOST}
+  # es02:
+  #   image: ${ELK_ELASTICSEARCH_IMAGE}
+  #   container_name: ${ELK_ELASTICSEARCH_NODE_02}
+  #   depends_on:
+  #     - ${ELK_ELASTICSEARCH_NODE_01}
+  #   volumes:
+  #     - ${ELK_CERTS_PATH}:/usr/share/elasticsearch/config/certs
+  #     - ./ELK/ELASTICSEARCH/${ELK_ELASTICSEARCH_NODE_02}:/usr/share/elasticsearch/data
+  #   environment:
+  #     - node.name=${ELK_ELASTICSEARCH_NODE_02}
+  #     - cluster.name=${ELK_CLUSTER_NAME}
+  #     - cluster.initial_master_nodes=${ELK_ELASTICSEARCH_NODE_01},${ELK_ELASTICSEARCH_NODE_02},${ELK_ELASTICSEARCH_NODE_03}
+  #     - discovery.seed_hosts=${ELK_ELASTICSEARCH_NODE_01},${ELK_ELASTICSEARCH_NODE_03}
+  #     - ELASTIC_PASSWORD=${ELK_ELASTICSEARCH_PASSWORD}
+  #     - bootstrap.memory_lock=true
+  #     - xpack.security.enabled=true
+  #     - xpack.security.http.ssl.enabled=true
+  #     - xpack.security.http.ssl.key=certs/${ELK_ELASTICSEARCH_NODE_02}/${ELK_ELASTICSEARCH_NODE_02}.key
+  #     - xpack.security.http.ssl.certificate=certs/${ELK_ELASTICSEARCH_NODE_02}/${ELK_ELASTICSEARCH_NODE_02}.crt
+  #     - xpack.security.http.ssl.certificate_authorities=certs/ca/ca.crt
+  #     - xpack.security.http.ssl.verification_mode=certificate
+  #     - xpack.security.transport.ssl.enabled=true
+  #     - xpack.security.transport.ssl.key=certs/${ELK_ELASTICSEARCH_NODE_02}/${ELK_ELASTICSEARCH_NODE_02}.key
+  #     - xpack.security.transport.ssl.certificate=certs/${ELK_ELASTICSEARCH_NODE_02}/${ELK_ELASTICSEARCH_NODE_02}.crt
+  #     - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt
+  #     - xpack.security.transport.ssl.verification_mode=certificate
+  #     - xpack.license.self_generated.type=${ELK_LICENSE}
+  #     - http.cors.enabled=true
+  #     - http.cors.allow-origin=*
+  #     - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+  #   mem_limit: ${ELK_ELASTICSEARCH_MEM_LIMIT}
+  #   ulimits:
+  #     memlock:
+  #       soft: -1
+  #       hard: -1
+  #   healthcheck:
+  #     test:
+  #       [
+  #         "CMD-SHELL",
+  #         "curl -s --cacert config/certs/ca/ca.crt https://localhost:9200 | grep -q 'missing authentication credentials'",
+  #       ]
+  #     interval: 10s
+  #     timeout: 10s
+  #     retries: 120
+  #   networks:
+  #     PROJECT_TEMPLATE_NETWORK:
+  #       ipv4_address: ${ELK_ELASTIC02_HOST}
+  # es03:
+  #   image: ${ELK_ELASTICSEARCH_IMAGE}
+  #   container_name: ${ELK_ELASTICSEARCH_NODE_03}
+  #   depends_on:
+  #     - ${ELK_ELASTICSEARCH_NODE_02}
+  #   volumes:
+  #     - ${ELK_CERTS_PATH}:/usr/share/elasticsearch/config/certs
+  #     - ./ELK/ELASTICSEARCH/${ELK_ELASTICSEARCH_NODE_03}:/usr/share/elasticsearch/data
+  #   environment:
+  #     - node.name=${ELK_ELASTICSEARCH_NODE_03}
+  #     - cluster.name=${ELK_CLUSTER_NAME}
+  #     - cluster.initial_master_nodes=${ELK_ELASTICSEARCH_NODE_01},${ELK_ELASTICSEARCH_NODE_02},${ELK_ELASTICSEARCH_NODE_03}
+  #     - discovery.seed_hosts=${ELK_ELASTICSEARCH_NODE_01},${ELK_ELASTICSEARCH_NODE_02}
+  #     - ELASTIC_PASSWORD=${ELK_ELASTICSEARCH_PASSWORD}
+  #     - bootstrap.memory_lock=true
+  #     - xpack.security.enabled=true
+  #     - xpack.security.http.ssl.enabled=true
+  #     - xpack.security.http.ssl.key=certs/${ELK_ELASTICSEARCH_NODE_03}/${ELK_ELASTICSEARCH_NODE_03}.key
+  #     - xpack.security.http.ssl.certificate=certs/${ELK_ELASTICSEARCH_NODE_03}/${ELK_ELASTICSEARCH_NODE_03}.crt
+  #     - xpack.security.http.ssl.certificate_authorities=certs/ca/ca.crt
+  #     - xpack.security.http.ssl.verification_mode=certificate
+  #     - xpack.security.transport.ssl.enabled=true
+  #     - xpack.security.transport.ssl.key=certs/${ELK_ELASTICSEARCH_NODE_03}/${ELK_ELASTICSEARCH_NODE_03}.key
+  #     - xpack.security.transport.ssl.certificate=certs/${ELK_ELASTICSEARCH_NODE_03}/${ELK_ELASTICSEARCH_NODE_03}.crt
+  #     - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt
+  #     - xpack.security.transport.ssl.verification_mode=certificate
+  #     - xpack.license.self_generated.type=${ELK_LICENSE}
+  #     - http.cors.enabled=true
+  #     - http.cors.allow-origin=*
+  #     - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+  #   mem_limit: ${ELK_ELASTICSEARCH_MEM_LIMIT}
+  #   ulimits:
+  #     memlock:
+  #       soft: -1
+  #       hard: -1
+  #   healthcheck:
+  #     test:
+  #       [
+  #         "CMD-SHELL",
+  #         "curl -s --cacert config/certs/ca/ca.crt https://localhost:9200 | grep -q 'missing authentication credentials'",
+  #       ]
+  #     interval: 10s
+  #     timeout: 10s
+  #     retries: 120
+  #   networks:
+  #     PROJECT_TEMPLATE_NETWORK:
+  #       ipv4_address: ${ELK_ELASTIC03_HOST}
+  # kib01:
+  #   image: kibana:8.0.0
+  #   container_name: kib01
+  #   depends_on:
+  #     es01:
+  #       condition: service_healthy
+  #     es02:
+  #       condition: service_healthy
+  #     es03:
+  #       condition: service_healthy
+  #   ports:
+  #     - ${ELK_KIBANA_PORT}:5601
+  #   volumes:
+  #     - ./ELK/KIBANA:/usr/share/kibana/data
+  #     - ${ELK_CERTS_PATH}:/usr/share/kibana/config/certs
+  #   environment:
+  #     - SERVERNAME=${ELK_KIBANA_SERVERNAME}
+  #     - ELASTICSEARCH_URL=https://${ELK_ELASTICSEARCH_NODE_01}:${ELK_ELASTIC01_PORT}
+  #     - ELASTICSEARCH_HOSTS=https://${ELK_ELASTICSEARCH_NODE_01}:${ELK_ELASTIC01_PORT}
+  #     - ELASTICSEARCH_USERNAME=${ELK_KIBANA_USERNAME}
+  #     - ELASTICSEARCH_PASSWORD=${ELK_KIBANA_PASSWORD}
+  #     - ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES=config/certs/ca/ca.crt
+  #   mem_limit: ${ELK_ELASTICSEARCH_MEM_LIMIT}
+  #   healthcheck:
+  #     test:
+  #       [
+  #         "CMD-SHELL",
+  #         "curl -s -I http://localhost:5601 | grep -q 'HTTP/1.1 302 Found'",
+  #       ]
+  #     interval: 10s
+  #     timeout: 10s
+  #     retries: 120
+  #   networks:
+  #     PROJECT_TEMPLATE_NETWORK:
+  #       ipv4_address: ${ELK_KIBANA_HOST}
+  # apm-server:
+  #   container_name: ${ELK_APM_SERVER_NODE}
+  #   image: elastic/apm-server:7.17.1
+  #   depends_on:
+  #     es01:
+  #       condition: service_healthy
+  #     es02:
+  #       condition: service_healthy
+  #     es03:
+  #       condition: service_healthy
+  #     kib01:
+  #       condition: service_healthy
+  #   cap_add: ["CHOWN", "DAC_OVERRIDE", "SETGID", "SETUID"]
+  #   cap_drop: ["ALL"]
+  #   ports:
+  #   - ${ELK_APM_SERVER_PORT}:8200
+  #   volumes:
+  #     - ${ELK_CERTS_PATH}:/etc/certificate
+  #   command: >
+  #      apm-server -e
+  #        -E apm-server.host=0.0.0.0:8200
+  #        -E apm-server.auth.secret_token=${ELK_APM_SERVER_TOKEN}
+  #        -E apm-server.ssl.enabled=true
+  #        -E apm-server.ssl.certificate=/etc/certificate/${ELK_APM_SERVER_NODE}/${ELK_APM_SERVER_NODE}.crt
+  #        -E apm-server.ssl.key=/etc/certificate/${ELK_APM_SERVER_NODE}/${ELK_APM_SERVER_NODE}.key
+  #        -E apm-server.rum.enabled=true
+  #        -E apm-server.kibana.enabled=true
+  #        -E apm-server.kibana.host=${ELK_KIBANA_HOST}:${ELK_KIBANA_PORT}
+  #        -E apm-server.kibana.username=${ELK_KIBANA_USERNAME}
+  #        -E apm-server.kibana.password=${ELK_KIBANA_PASSWORD}
+  #        -E output.elasticsearch.hosts=["https://${ELK_ELASTICSEARCH_NODE_01}:${ELK_ELASTIC01_PORT}"]
+  #        -E output.elasticsearch.username=${ELK_ELASTICSEARCH_USERNAME}
+  #        -E output.elasticsearch.password=${ELK_ELASTICSEARCH_PASSWORD}
+  #        -E output.elasticsearch.ssl.certificate_authorities=/etc/certificate/ca/ca.crt
+  #        -E output.elasticsearch.ssl.certificate=/etc/certificate/${ELK_ELASTICSEARCH_NODE_01}/${ELK_ELASTICSEARCH_NODE_01}.crt
+  #        -E output.elasticsearch.ssl.key=/etc/certificate/${ELK_ELASTICSEARCH_NODE_01}/${ELK_ELASTICSEARCH_NODE_01}.key
+  #        -E setup.template.settings.index.number_of_replicas=0
+  #   healthcheck:
+  #     interval: 10s
+  #     retries: 12
+  #     test: curl --write-out 'HTTP %{http_code}' --fail --silent --output /dev/null http://localhost:8200/
+  #   networks:
+  #     PROJECT_TEMPLATE_NETWORK:
+  #       ipv4_address: ${ELK_APM_SERVER_HOST}
 networks:
   PROJECT_TEMPLATE_NETWORK:
     name: PROJECT_TEMPLATE_NETWORK

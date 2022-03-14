@@ -1,19 +1,12 @@
 {
-  "restartable": "rs",
-  "ignore": [
-    ".git",
-    "node_modules/**/node_modules",
-    ".editorconfig"
-  ],
-  "verbose": true,
-  "execMap": {
-    "js": "node"
-  },
-  "watch": [
-    "src/"
-  ],
   "env": {
     "NODE_ENV": "development"
   },
-  "ext": "js,json"
+  "restartable": "rs",
+  "verbose": true,
+  "watch": ["src"],
+  "ignore": [".git",".editorconfig"],
+  "ext": "ts,mjs,js,json,graphql",
+  "exec": "etsc && node ./_build/index.js",
+  "legacyWatch": true
 }

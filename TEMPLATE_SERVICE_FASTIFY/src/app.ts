@@ -1,6 +1,7 @@
 const Fastify = require('fastify');
 const Config = require('@config/_core');
 const { fromEnv } = require('@utils');
+const os = require("os");
 const { NOT_FOUND, INTERNAL_SERVER_ERROR } = require('@lib/errors');
 
 const logsConfig = {
@@ -32,7 +33,9 @@ const build = async () => {
     logger: logger[fromEnv('NODE_ENV')],
     http2: true,
     https: Config.get('/application/tlsOptions')
-  })
+  });
+
+  console.table(os.cpus());
 
   await fastify.register(require('fastify-cors'), { origin: '*' })
   await fastify.register(require('fastify-helmet'), {

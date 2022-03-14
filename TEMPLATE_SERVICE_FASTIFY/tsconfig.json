@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "allowJS": true,
+    "target": "ES6",
+    "module": "CommonJS",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "Node",
+    "sourceMap": true,
+    "outDir": "_build",
+    "baseUrl": "src",
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules"]
+}

@@ -1,12 +1,12 @@
-const apm = require('elastic-apm-node').start({
-  // serviceName: '',
-  serverUrl: process.env.ELK_STACK_APM_SERVER_URL,
-  verifyServerCert: false,
-  serverCaCertFile: '/usr/src/app/'+process.env.ELK_STACK_CA_CERT_PATH,
-  secretToken: process.env.ELK_STACK_ELASTIC_TOKEN,
-  // apiKey: '',
-  // active: process.env.NODE_ENV === 'production'
-});
+// const apm = require('elastic-apm-node').start({
+//   // serviceName: '',
+//   serverUrl: process.env.ELK_STACK_APM_SERVER_URL,
+//   verifyServerCert: false,
+//   serverCaCertFile: '/usr/src/app/certificate/'+process.env.ELK_STACK_CA_CERT_PATH,
+//   secretToken: process.env.ELK_STACK_ELASTIC_TOKEN,
+//   // apiKey: '',
+//   // active: process.env.NODE_ENV === 'production'
+// });
 
 require('module-alias/register');
 const { build } = require('@app')
