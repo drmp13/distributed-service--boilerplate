@@ -75,6 +75,7 @@
     "@config": "_build/config",
     "@app": "_build/app",
     "@api": "_build/app/api",
+    "@apicores": "_build/app/api/v1/_core",
     "@lib": "_build/lib",
     "@rpc": "_build/lib/rpc",
     "@connection": "_build/lib/connection",

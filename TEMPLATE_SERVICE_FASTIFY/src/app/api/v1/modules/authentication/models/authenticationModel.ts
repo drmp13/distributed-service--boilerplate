@@ -1,8 +1,7 @@
-const postgres = require("@connection/database/postgres")[Symbol.for('plugin-meta')].mod;
-const { QueryTypes } = postgres.queryTypes;
-const db = postgres.connection.DEFAULT;
-
-
+import Postgres from "@connection/database/postgres";
+const postgres = Postgres[Symbol.for('plugin-meta')].mod;
+const Db = postgres.connection.DEFAULT;
+const { QueryTypes } = postgres.Sequelize;
 
 
 class AuthenticationModel{
@@ -14,9 +13,9 @@ class AuthenticationModel{
 
   }
 
-  async auth(username,password){
+  static async auth(username: string,password: string){
     var response = {}
-    await db.query(
+    await Db.query(
      `SELECT *
       FROM users
       WHERE username=$username

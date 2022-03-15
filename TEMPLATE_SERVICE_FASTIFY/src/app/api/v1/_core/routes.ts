@@ -1,4 +1,6 @@
-const apiRoutes = async (app, options) => {
+import AuthenticationRoutes from '../modules/authentication/routes';
+
+const apiV1Routes = async (app, options) => {
   app.route({
     method: 'GET',
     url: '/',
@@ -25,9 +27,9 @@ const apiRoutes = async (app, options) => {
     }
   });
 
-  app.register(require('../../modules/authentication/routes'), { prefix: '/auth' });
+  app.register(AuthenticationRoutes, { prefix: '/auth' });
 
 
 }
 
-module.exports = apiRoutes
+export default apiV1Routes

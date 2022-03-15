@@ -1,14 +1,15 @@
 'use strict';
 
-const Confidence = require('confidence');
-const Fs = require('fs');
-const Path = require('path');
-const Pack = require('@root/package');
+import Confidence from 'confidence';
+import Fs from 'fs';
+import Path from 'path';
+import Pack from '@root/package';
+import { fromEnv, terminate } from '@utils';
 
 // Confidence criteria
 let internals = {
     criteria: {
-        env: process.env.NODE_ENV
+        env: fromEnv('NODE_ENV')
     }
 };
 
@@ -29,10 +30,10 @@ internals.config = {
         },
         port: {
             $filter: 'env',
-            production: process.env.PORT,
+            production: fromEnv('PORT'),
             test: 7000,
-            development: process.env.PORT,
-            $default: process.env.PORT
+            development: fromEnv('PORT'),
+            $default: fromEnv('PORT')
         },
         allowedOrigin: {
             $filter: 'env',
@@ -46,9 +47,9 @@ internals.config = {
           key: Fs.readFileSync(Path.join('/usr/src/app/certificate/ssl/key.pem'), 'utf8'),
           cert: Fs.readFileSync(Path.join('/usr/src/app/certificate/ssl/cert.pem'), 'utf8')
         },
-        hostExpose: process.env.EXPOSE_URL,
-        portExpose: process.env.EXPOSE_PORT,
-        baseUrl: process.env.EXPOSE_PROTOCOL+'://'+process.env.EXPOSE_URL+':'+process.env.EXPOSE_PORT
+        hostExpose: fromEnv('EXPOSE_URL'),
+        portExpose: fromEnv('EXPOSE_PORT'),
+        baseUrl: `${fromEnv('EXPOSE_PROTOCOL')}://${fromEnv('EXPOSE_URL')}${fromEnv('EXPOSE_PORT')}`
     },
     /* ----------------- Databases -------------- */
     databases: {
@@ -56,63 +57,63 @@ internals.config = {
           default: {
             $filter: 'env',
             production: {
-              host: process.env.DATABASE_PG__DEFAULT__HOST,
-              port: process.env.DATABASE_PG__GLOBAL__PORT,
-              username: process.env.DATABASE_PG__DEFAULT__USER,
-              password: process.env.DATABASE_PG__DEFAULT__PASS,
-              database: process.env.DATABASE_PG__DEFAULT__DB
+              host: fromEnv('DATABASE_PG__DEFAULT__HOST'),
+              port: fromEnv('DATABASE_PG__GLOBAL__PORT'),
+              username: fromEnv('DATABASE_PG__DEFAULT__USER'),
+              password: fromEnv('DATABASE_PG__DEFAULT__PASS'),
+              database: fromEnv('DATABASE_PG__DEFAULT__DB')
             },
             test: {
-              host: process.env.DATABASE_PG__DEFAULT__HOST,
-              port: process.env.DATABASE_PG__GLOBAL__PORT,
-              username: process.env.DATABASE_PG__DEFAULT__USER,
-              password: process.env.DATABASE_PG__DEFAULT__PASS,
-              database: process.env.DATABASE_PG__DEFAULT__DB
+              host: fromEnv('DATABASE_PG__DEFAULT__HOST'),
+              port: fromEnv('DATABASE_PG__GLOBAL__PORT'),
+              username: fromEnv('DATABASE_PG__DEFAULT__USER'),
+              password: fromEnv('DATABASE_PG__DEFAULT__PASS'),
+              database: fromEnv('DATABASE_PG__DEFAULT__DB')
             },
             development: {
-              host: process.env.DATABASE_PG__DEFAULT__HOST,
-              port: process.env.DATABASE_PG__GLOBAL__PORT,
-              username: process.env.DATABASE_PG__DEFAULT__USER,
-              password: process.env.DATABASE_PG__DEFAULT__PASS,
-              database: process.env.DATABASE_PG__DEFAULT__DB
+              host: fromEnv('DATABASE_PG__DEFAULT__HOST'),
+              port: fromEnv('DATABASE_PG__GLOBAL__PORT'),
+              username: fromEnv('DATABASE_PG__DEFAULT__USER'),
+              password: fromEnv('DATABASE_PG__DEFAULT__PASS'),
+              database: fromEnv('DATABASE_PG__DEFAULT__DB')
             },
             $default: {
-              host: process.env.DATABASE_PG__DEFAULT__HOST,
-              port: process.env.DATABASE_PG__GLOBAL__PORT,
-              username: process.env.DATABASE_PG__DEFAULT__USER,
-              password: process.env.DATABASE_PG__DEFAULT__PASS,
-              database: process.env.DATABASE_PG__DEFAULT__DB
+              host: fromEnv('DATABASE_PG__DEFAULT__HOST'),
+              port: fromEnv('DATABASE_PG__GLOBAL__PORT'),
+              username: fromEnv('DATABASE_PG__DEFAULT__USER'),
+              password: fromEnv('DATABASE_PG__DEFAULT__PASS'),
+              database: fromEnv('DATABASE_PG__DEFAULT__DB')
             }
           },
           second_db: {
             $filter: 'env',
             production: {
-              host: process.env.DATABASE_PG__SECOND__HOST,
-              port: process.env.DATABASE_PG__GLOBAL__PORT,
-              username: process.env.DATABASE_PG__SECOND__USER,
-              password: process.env.DATABASE_PG__SECOND__PASS,
-              database: process.env.DATABASE_PG__SECOND__DB
+              host: fromEnv('DATABASE_PG__SECOND__HOST'),
+              port: fromEnv('DATABASE_PG__GLOBAL__PORT'),
+              username: fromEnv('DATABASE_PG__SECOND__USER'),
+              password: fromEnv('DATABASE_PG__SECOND__PASS'),
+              database: fromEnv('DATABASE_PG__SECOND__DB')
             },
             test: {
-              host: process.env.DATABASE_PG__SECOND__HOST,
-              port: process.env.DATABASE_PG__GLOBAL__PORT,
-              username: process.env.DATABASE_PG__SECOND__USER,
-              password: process.env.DATABASE_PG__SECOND__PASS,
-              database: process.env.DATABASE_PG__SECOND__DB
+              host: fromEnv('DATABASE_PG__SECOND__HOST'),
+              port: fromEnv('DATABASE_PG__GLOBAL__PORT'),
+              username: fromEnv('DATABASE_PG__SECOND__USER'),
+              password: fromEnv('DATABASE_PG__SECOND__PASS'),
+              database: fromEnv('DATABASE_PG__SECOND__DB')
             },
             development: {
-              host: process.env.DATABASE_PG__SECOND__HOST,
-              port: process.env.DATABASE_PG__GLOBAL__PORT,
-              username: process.env.DATABASE_PG__SECOND__USER,
-              password: process.env.DATABASE_PG__SECOND__PASS,
-              database: process.env.DATABASE_PG__SECOND__DB
+              host: fromEnv('DATABASE_PG__SECOND__HOST'),
+              port: fromEnv('DATABASE_PG__GLOBAL__PORT'),
+              username: fromEnv('DATABASE_PG__SECOND__USER'),
+              password: fromEnv('DATABASE_PG__SECOND__PASS'),
+              database: fromEnv('DATABASE_PG__SECOND__DB')
             },
             $default: {
-              host: process.env.DATABASE_PG__SECOND__HOST,
-              port: process.env.DATABASE_PG__GLOBAL__PORT,
-              username: process.env.DATABASE_PG__SECOND__USER,
-              password: process.env.DATABASE_PG__SECOND__PASS,
-              database: process.env.DATABASE_PG__SECOND__DB
+              host: fromEnv('DATABASE_PG__SECOND__HOST'),
+              port: fromEnv('DATABASE_PG__GLOBAL__PORT'),
+              username: fromEnv('DATABASE_PG__SECOND__USER'),
+              password: fromEnv('DATABASE_PG__SECOND__PASS'),
+              database: fromEnv('DATABASE_PG__SECOND__DB')
             }
           }
       },
@@ -120,32 +121,32 @@ internals.config = {
           default: {
             $filter: 'env',
             production: {
-              host: process.env.DATABASE_MONGO__MAILER__HOST,
-              port: process.env.DATABASE_MONGO__GLOBAL__PORT,
-              username: process.env.DATABASE_MONGO__MAILER__USER,
-              password: process.env.DATABASE_MONGO__MAILER__PASS,
-              database: process.env.DATABASE_MONGO__MAILER__DB
+              host: fromEnv('DATABASE_MONGO__MAILER__HOST'),
+              port: fromEnv('DATABASE_MONGO__GLOBAL__PORT'),
+              username: fromEnv('DATABASE_MONGO__MAILER__USER'),
+              password: fromEnv('DATABASE_MONGO__MAILER__PASS'),
+              database: fromEnv('DATABASE_MONGO__MAILER__DB')
             },
             test: {
-              host: process.env.DATABASE_MONGO__MAILER__HOST,
-              port: process.env.DATABASE_MONGO__GLOBAL__PORT,
-              username: process.env.DATABASE_MONGO__MAILER__USER,
-              password: process.env.DATABASE_MONGO__MAILER__PASS,
-              database: process.env.DATABASE_MONGO__MAILER__DB
+              host: fromEnv('DATABASE_MONGO__MAILER__HOST'),
+              port: fromEnv('DATABASE_MONGO__GLOBAL__PORT'),
+              username: fromEnv('DATABASE_MONGO__MAILER__USER'),
+              password: fromEnv('DATABASE_MONGO__MAILER__PASS'),
+              database: fromEnv('DATABASE_MONGO__MAILER__DB')
             },
             development: {
-              host: process.env.DATABASE_MONGO__MAILER__HOST,
-              port: process.env.DATABASE_MONGO__GLOBAL__PORT,
-              username: process.env.DATABASE_MONGO__MAILER__USER,
-              password: process.env.DATABASE_MONGO__MAILER__PASS,
-              database: process.env.DATABASE_MONGO__MAILER__DB
+              host: fromEnv('DATABASE_MONGO__MAILER__HOST'),
+              port: fromEnv('DATABASE_MONGO__GLOBAL__PORT'),
+              username: fromEnv('DATABASE_MONGO__MAILER__USER'),
+              password: fromEnv('DATABASE_MONGO__MAILER__PASS'),
+              database: fromEnv('DATABASE_MONGO__MAILER__DB')
             },
             $default: {
-              host: process.env.DATABASE_MONGO__MAILER__HOST,
-              port: process.env.DATABASE_MONGO__GLOBAL__PORT,
-              username: process.env.DATABASE_MONGO__MAILER__USER,
-              password: process.env.DATABASE_MONGO__MAILER__PASS,
-              database: process.env.DATABASE_MONGO__MAILER__DB
+              host: fromEnv('DATABASE_MONGO__MAILER__HOST'),
+              port: fromEnv('DATABASE_MONGO__GLOBAL__PORT'),
+              username: fromEnv('DATABASE_MONGO__MAILER__USER'),
+              password: fromEnv('DATABASE_MONGO__MAILER__PASS'),
+              database: fromEnv('DATABASE_MONGO__MAILER__DB')
             }
           }
       }
@@ -156,10 +157,10 @@ internals.config = {
           default: {
             $filter: 'env',
             production: {
-              host: process.env.MESSAGE_BROKER__HOST,
-              port: process.env.MESSAGE_BROKER__PORT,
-              username: process.env.MESSAGE_BROKER__USER,
-              password: process.env.MESSAGE_BROKER__PASS,
+              host: fromEnv('MESSAGE_BROKER__HOST'),
+              port: fromEnv('MESSAGE_BROKER__PORT'),
+              username: fromEnv('MESSAGE_BROKER__USER'),
+              password: fromEnv('MESSAGE_BROKER__PASS'),
               workspace: {
                 subcribes: [{
                   callback: "consumer",
@@ -172,10 +173,10 @@ internals.config = {
               }
             },
             $default: {
-              host: process.env.MESSAGE_BROKER__HOST,
-              port: process.env.MESSAGE_BROKER__PORT,
-              username: process.env.MESSAGE_BROKER__USER,
-              password: process.env.MESSAGE_BROKER__PASS,
+              host: fromEnv('MESSAGE_BROKER__HOST'),
+              port: fromEnv('MESSAGE_BROKER__PORT'),
+              username: fromEnv('MESSAGE_BROKER__USER'),
+              password: fromEnv('MESSAGE_BROKER__PASS'),
               workspace: {
                 subcribes: [{
                   callback: "consumer",
@@ -230,7 +231,7 @@ internals.config = {
     // },
     jwtAuthOptions: {
       default: {
-        key: process.env.JWT_SECRET,
+        key: fromEnv('JWT_SECRET'),
         algorithm: 'HS256',
         verify: { // set to 'false' if u want to disable verification
           aud: 'urn:audience:test',
@@ -259,7 +260,7 @@ internals.config = {
                 }
         },
         grouping: 'tags',
-        host: process.env.EXPOSE_URL+':'+process.env.EXPOSE_PORT,
+        host: `${fromEnv('EXPOSE_URL')}:${fromEnv('EXPOSE_PORT')}`,
         schemes: ['https'],
         consumes: ['application/json'],
         produces: ['application/json'],

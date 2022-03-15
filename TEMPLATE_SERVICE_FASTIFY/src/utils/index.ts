@@ -1,9 +1,7 @@
-const Logger = require('./logger')
-const fromEnv = require('./fromenv')
-const terminate = require('./terminate')
+import fromEnv from './_fromenv';
+import terminate from './_terminate';
 
 module.exports = {
-  Logger,
   fromEnv,
   terminate
 }

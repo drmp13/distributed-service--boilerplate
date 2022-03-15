@@ -8,9 +8,9 @@
 //   // active: process.env.NODE_ENV === 'production'
 // });
 
-require('module-alias/register');
-const { build } = require('@app')
-const { fromEnv, terminate } = require('@utils')
+import 'module-alias/register';
+import { build } from '@app';
+import { fromEnv, terminate } from '@utils';
 
 build()
   .then(app => {

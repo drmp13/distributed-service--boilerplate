@@ -1,7 +1,6 @@
 'use strict';
-const { Sequelize } = require('sequelize');
-const queryTypes = require('sequelize');
-const fastifyPlugin = require('fastify-plugin');
+const Sequelize = require('sequelize');
+import FastifyPlugin from 'fastify-plugin';
 
 
 var connection={};
@@ -26,12 +25,10 @@ function plugin(fastify, opts, done) {
   done();
 }
 
-module.exports = fastifyPlugin(plugin, {
+module.exports = FastifyPlugin(plugin, {
   name: 'postgres',
   mod: {
     connection,
-    queryTypes
+    Sequelize
   }
-})
-
-//module.exports = queryTypes;
+});

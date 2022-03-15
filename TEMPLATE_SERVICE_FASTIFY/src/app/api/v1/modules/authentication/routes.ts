@@ -1,4 +1,4 @@
-const Controllers = require('./controllers');
+import Controllers from './controllers';
 const apiRoutes = async (app, options) => {
   app.route({
     method: 'POST',

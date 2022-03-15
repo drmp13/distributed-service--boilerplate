@@ -1,19 +1,14 @@
-const boom = require('@hapi/boom')
-// const { Movies } = require('../models')
-// const { isValidObjectId } = require('mongoose')
-// const { MoviesRepository } = require('../repositories')
-const { Unauthorized, NotFound, UnprocessableEntity } = require('http-errors')
-const ResponseHelper = require('@rpc/response');
-const AuthenticationModel = require("../models/authenticationModel");
-const authenticationModel = new AuthenticationModel();
-const JwtAuthSign = require("@authentication/jwt/jwtAuthSign");
+import Boom from '@hapi/boom';
+import ResponseHelper from '@rpc/response';
+import JwtAuthSign from '@authentication/jwt/jwtAuthSign';
+import AuthenticationModel from '../models/authenticationModel';
 
 exports.login = async (request, reply) => {
   try {
     const username = request.body.username;
     const password = request.body.password;
 
-    const login = await authenticationModel.auth(username,password);
+    const login = await AuthenticationModel.auth(username,password);
     if(login.error==null){
       if(login.data!==null){
         let userdata = {
@@ -35,7 +30,7 @@ exports.login = async (request, reply) => {
       ResponseHelper.sendResponseHTTP(reply, 400);
     }
   } catch (err) {
-    throw boom.boomify(err)
+    throw Boom.boomify(err)
   }
 };
 

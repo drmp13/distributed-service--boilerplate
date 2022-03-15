@@ -1,8 +1,17 @@
-const Fastify = require('fastify');
-const Config = require('@config/_core');
-const { fromEnv } = require('@utils');
-const os = require("os");
-const { NOT_FOUND, INTERNAL_SERVER_ERROR } = require('@lib/errors');
+import fastify from 'fastify';
+import os from 'os';
+import pino from 'pino';
+import { fromEnv } from '@utils';
+import { NOT_FOUND, INTERNAL_SERVER_ERROR } from '@lib/errors';
+
+
+//IMPORT MODULES
+import FsCors from 'fastify-cors';
+import FsHelmet from 'fastify-helmet';
+import FsSwagger from 'fastify-swagger';
+import XConfig from '@config/_core';
+import XModAuthJWTVerify from '@lib/authentication/jwt/jwtAuthVerify';
+import XModDBPostgres from '@connection/database/postgres';
 
 const logsConfig = {
   formatters: {
@@ -28,17 +37,17 @@ const logger = {
 }
 
 const build = async () => {
-  const fastify = Fastify({
+  const server = fastify({
     bodyLimit: 1048576 * 2,
-    logger: logger[fromEnv('NODE_ENV')],
+    logger: pino(logger[fromEnv('NODE_ENV')]),
     http2: true,
-    https: Config.get('/application/tlsOptions')
+    https: XConfig.get('/application/tlsOptions')
   });
 
   console.table(os.cpus());
 
-  await fastify.register(require('fastify-cors'), { origin: '*' })
-  await fastify.register(require('fastify-helmet'), {
+  await server.register(FsCors, { origin: '*' })
+  await server.register(FsHelmet, {
     contentSecurityPolicy: {
       directives: {
         baseUri: ['\'self\''],
@@ -54,39 +63,39 @@ const build = async () => {
   });
 
   // AUTHENTICATION
-  await fastify.register(require('@lib/authentication/jwt/jwtAuthVerify'), {
+  await server.register(XModAuthJWTVerify, {
     name: 'authenticate-jwt-default',
-    config: Config.get('/jwtAuthOptions/default'),
+    config: XConfig.get('/jwtAuthOptions/default'),
     validateMethod: 'none'
   });
 
   // DATABASE
-  await fastify.register(require('@connection/database/postgres'),
+  await server.register(XModDBPostgres,
   [
     {
-      credential: Config.get('/databases/postgres/default'),
+      credential: XConfig.get('/databases/postgres/default'),
       info: {
         id: "DEFAULT",
-        env: Config.get('/application/environtment')
+        env: XConfig.get('/application/environtment')
       }
     },
     {
-      credential: Config.get('/databases/postgres/second_db'),
+      credential: XConfig.get('/databases/postgres/second_db'),
       info: {
         id: "SECOND_DB",
-        env: Config.get('/application/environtment')
+        env: XConfig.get('/application/environtment')
       }
     }
   ])
 
   // DOCUMENTATION
-  await fastify.register(require('fastify-swagger'), Config.get('/swagger'));
+  await server.register(FsSwagger, XConfig.get('/swagger'));
 
   //ROUTES
-  await fastify.register(require('@api/v1/_core/routes'), { prefix: 'api/v1' })
+  await server.register(require('@api/v1/_core/routes'), { prefix: 'api/v1' })
 
-  fastify.setNotFoundHandler((request, reply) => {
-    fastify.log.debug(`Route not found: ${request.method}:${request.raw.url}`)
+  server.setNotFoundHandler((request, reply) => {
+    server.log.debug(`Route not found: ${request.method}:${request.raw.url}`)
 
     reply.status(404).send({
       statusCode: 404,
@@ -95,10 +104,10 @@ const build = async () => {
     })
   })
 
-  fastify.setErrorHandler((err, request, reply) => {
-    fastify.log.debug(`Request url: ${request.raw.url}`)
-    fastify.log.debug(`Payload: ${request.body}`)
-    fastify.log.error(`Error occurred: ${err}`)
+  server.setErrorHandler((err, request, reply) => {
+    server.log.debug(`Request url: ${request.raw.url}`)
+    server.log.debug(`Payload: ${request.body}`)
+    server.log.error(`Error occurred: ${err}`)
 
     const code = err.statusCode ?? 500
 
@@ -109,7 +118,7 @@ const build = async () => {
     })
   })
 
-  return fastify
+  return server
 }
 
 // implement inversion of control to make the code testable

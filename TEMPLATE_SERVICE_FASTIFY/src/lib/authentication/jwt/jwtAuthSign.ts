@@ -1,9 +1,9 @@
 'use strict';
-const JWT   = require('jsonwebtoken');
-const Config = require('@config/_core');
+import JWT from 'jsonwebtoken';
+import XConfig from '@config/_core';
 
-const jwtAuthSignDefault = function jwtAuthSign(userdata) {
-    let jwtAuthOptions = Config.get('/jwtAuthOptions/default');
+const jwtAuthSignDefault = function jwtAuthSign(userdata: any) {
+    let jwtAuthOptions = XConfig.get('/jwtAuthOptions/default');
     let payload = {
       userdata: userdata
     }

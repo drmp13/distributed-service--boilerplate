@@ -1,9 +1,9 @@
 'use strict';
 
-exports.sendResponseHTTP = async function (reply, code, message, data) {
+exports.sendResponseHTTP = async function (reply, code: number, message: string, data: any) {
     const response_success = [200,201];
     const response_failed = [400,404,409,401,500];
-    var response = {}
+    let response = {}
     code = parseInt(code);
 
     if(!(response_success.includes(code) || response_failed.includes(code))){
