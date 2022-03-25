@@ -1,6 +1,6 @@
 
 
-# Hapi-JS Template
+# Backend Distributed Service Boilerplate
 ## Techstack
 
 
