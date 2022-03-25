@@ -1,16 +1,22 @@
 import FastifyPlugin from 'fastify-plugin';
+import ResponseRPC from '@rpc/response';
 
 async function validateUser(validateMethod: string){
   switch(validateMethod){
     case 'none':
       return true;
-      break;
     default:
       return false;
   }
 }
 
-module.exports = FastifyPlugin(async function(fastify, opts) {
+type jwtAuthVerify = {
+  name: string;
+  config: any;
+  validationMethod: string;
+};
+
+export default FastifyPlugin(async function(fastify, opts: jwtAuthVerify) {
   const customMessages = {
     badRequestErrorMessage: 'Format is Authorization: Bearer [token]',
     noAuthorizationInHeaderMessage: 'Autorization header is missing!',
@@ -33,7 +39,7 @@ module.exports = FastifyPlugin(async function(fastify, opts) {
   fastify.decorate(opts.name, async function(request, reply, done) {
     try {
       const decodedToken = await request.jwtVerify();
-      if(await validateUser(opts.validateMethod)){
+      if(await validateUser(opts.validationMethod)){
         request.auth = {
           userdata : decodedToken.userdata,
           isAuthenticated: true
@@ -42,9 +48,10 @@ module.exports = FastifyPlugin(async function(fastify, opts) {
         request.auth = {
           isAuthenticated: false
         };
+        ResponseRPC.unauthorized(reply)
+        done()
       }
-
-      done()
+      
     } catch (err) {
       reply.send(err)
       done()

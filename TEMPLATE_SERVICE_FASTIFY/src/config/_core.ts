@@ -3,11 +3,11 @@
 import Confidence from 'confidence';
 import Fs from 'fs';
 import Path from 'path';
-import Pack from '@root/package';
-import { fromEnv, terminate } from '@utils';
+import Pack from '@root/package.json';
+import { fromEnv } from '@/utils';
 
 // Confidence criteria
-let internals = {
+let internals:any = {
     criteria: {
         env: fromEnv('NODE_ENV')
     }
@@ -15,31 +15,65 @@ let internals = {
 
 // Variable for Config
 let email_template_path = '/usr/src/app/lib/mailer/template';
-
 //  Confidence document object
 internals.config = {
     $meta: 'App configuration file',
     /* ----------------- Application -------------- */
     application: {
-        environtment: {
+        info: {
+          title: Pack.name,
+          version: Pack.version,
+          description: Pack.description
+        },
+        staticFile: {
+          root: `/usr/src/app/`,
+          definition: {
+            default: {
+              prefix: `files`,
+              directory: {
+                $filter: 'env',
+                test: `_publictest`,
+                production: `_public`,
+                staging: `_public`,
+                development: `_public`,
+                localhost: `_public`,
+                $default: `_public`
+              },
+              manifest: {
+                root: ``,
+                default: `default`,
+                images: `images`,
+                imagesAppLogo: `images/applogo`
+              }
+            }
+          }
+        },
+        environments: ['test','production','staging','development','localhost'],
+        environment: {
             $filter: 'env',
-            production: "Production",
-            test: "Testing",
-            development: "Development",
-            $default: "Development"
+            test: "test",
+            production: "production",
+            staging: "staging",
+            development: "development",
+            localhost: "localhost",
+            $default: "Localhost"
         },
         port: {
             $filter: 'env',
-            production: fromEnv('PORT'),
             test: 7000,
+            production: fromEnv('PORT'),
+            staging: fromEnv('PORT'),
             development: fromEnv('PORT'),
+            localhost: fromEnv('PORT'),
             $default: fromEnv('PORT')
         },
         allowedOrigin: {
             $filter: 'env',
-            production: ["*"],
             test: ["*"],
+            production: ["*"],
+            staging: ["*"],
             development: ["*"],
+            localhost: ["*"],
             $default: ["*"]
         },
         tlsOptions: {
@@ -47,39 +81,101 @@ internals.config = {
           key: Fs.readFileSync(Path.join('/usr/src/app/certificate/ssl/key.pem'), 'utf8'),
           cert: Fs.readFileSync(Path.join('/usr/src/app/certificate/ssl/cert.pem'), 'utf8')
         },
-        hostExpose: fromEnv('EXPOSE_URL'),
-        portExpose: fromEnv('EXPOSE_PORT'),
-        baseUrl: `${fromEnv('EXPOSE_PROTOCOL')}://${fromEnv('EXPOSE_URL')}${fromEnv('EXPOSE_PORT')}`
+        hostExpose: {
+          $filter: 'env',
+          test: "127.0.0.1",
+          production: fromEnv('EXPOSE_URL'),
+          staging: fromEnv('EXPOSE_URL'),
+          development: fromEnv('EXPOSE_URL'),
+          localhost: "127.0.0.1",
+          $default: "127.0.0.1"
+        },
+        portExpose: {
+          $filter: 'env',
+          test: 7000,
+          production: fromEnv('EXPOSE_PORT'),
+          staging: fromEnv('EXPOSE_PORT'),
+          development: fromEnv('EXPOSE_PORT'),
+          localhost: fromEnv('EXPOSE_PORT'),
+          $default:fromEnv('EXPOSE_PORT')
+        },
+        baseUrl: {
+          $filter: 'env',
+          test: `http://127.0.0.1:7000`,
+          production: `${fromEnv('EXPOSE_PROTOCOL')}://${fromEnv('EXPOSE_URL')}:${fromEnv('EXPOSE_PORT')}`,
+          staging: `${fromEnv('EXPOSE_PROTOCOL')}://${fromEnv('EXPOSE_URL')}:${fromEnv('EXPOSE_PORT')}`,
+          development: `${fromEnv('EXPOSE_PROTOCOL')}://${fromEnv('EXPOSE_URL')}:${fromEnv('EXPOSE_PORT')}`,
+          localhost: `${fromEnv('EXPOSE_PROTOCOL')}://${fromEnv('EXPOSE_URL')}:${fromEnv('EXPOSE_PORT')}`,
+          $default:`${fromEnv('EXPOSE_PROTOCOL')}://${fromEnv('EXPOSE_URL')}:${fromEnv('EXPOSE_PORT')}`
+        }
     },
     /* ----------------- Databases -------------- */
     databases: {
       postgres: {
           default: {
             $filter: 'env',
-            production: {
+            test: {
               host: fromEnv('DATABASE_PG__DEFAULT__HOST'),
-              port: fromEnv('DATABASE_PG__GLOBAL__PORT'),
+              port: {
+                "$env" : "DATABASE_PG__GLOBAL__PORT",
+                "$coerce": "number",
+                "$default": 5432
+              },
               username: fromEnv('DATABASE_PG__DEFAULT__USER'),
               password: fromEnv('DATABASE_PG__DEFAULT__PASS'),
               database: fromEnv('DATABASE_PG__DEFAULT__DB')
             },
-            test: {
+            production: {
               host: fromEnv('DATABASE_PG__DEFAULT__HOST'),
-              port: fromEnv('DATABASE_PG__GLOBAL__PORT'),
+              port: {
+                "$env" : "DATABASE_PG__GLOBAL__PORT",
+                "$coerce": "number",
+                "$default": 5432
+              },
+              username: fromEnv('DATABASE_PG__DEFAULT__USER'),
+              password: fromEnv('DATABASE_PG__DEFAULT__PASS'),
+              database: fromEnv('DATABASE_PG__DEFAULT__DB')
+            },
+            staging: {
+              host: fromEnv('DATABASE_PG__DEFAULT__HOST'),
+              port: {
+                "$env" : "DATABASE_PG__GLOBAL__PORT",
+                "$coerce": "number",
+                "$default": 5432
+              }, 
               username: fromEnv('DATABASE_PG__DEFAULT__USER'),
               password: fromEnv('DATABASE_PG__DEFAULT__PASS'),
               database: fromEnv('DATABASE_PG__DEFAULT__DB')
             },
             development: {
               host: fromEnv('DATABASE_PG__DEFAULT__HOST'),
-              port: fromEnv('DATABASE_PG__GLOBAL__PORT'),
+              port: {
+                "$env" : "DATABASE_PG__GLOBAL__PORT",
+                "$coerce": "number",
+                "$default": 5432
+              },
+              username: fromEnv('DATABASE_PG__DEFAULT__USER'),
+              password: fromEnv('DATABASE_PG__DEFAULT__PASS'),
+              database: fromEnv('DATABASE_PG__DEFAULT__DB')
+            },
+            localhost: {
+              host: fromEnv('DATABASE_PG__DEFAULT__HOST'),
+              port: {
+                "$env" : "DATABASE_PG__GLOBAL__PORT",
+                "$coerce": "number",
+                "$default": 5432
+              },
               username: fromEnv('DATABASE_PG__DEFAULT__USER'),
               password: fromEnv('DATABASE_PG__DEFAULT__PASS'),
               database: fromEnv('DATABASE_PG__DEFAULT__DB')
             },
             $default: {
               host: fromEnv('DATABASE_PG__DEFAULT__HOST'),
-              port: fromEnv('DATABASE_PG__GLOBAL__PORT'),
+              port: {
+                "$env" : "DATABASE_PG__GLOBAL__PORT",
+                "$coerce": "number",
+                "$default": 5432
+              },
               username: fromEnv('DATABASE_PG__DEFAULT__USER'),
               password: fromEnv('DATABASE_PG__DEFAULT__PASS'),
               database: fromEnv('DATABASE_PG__DEFAULT__DB')
@@ -87,30 +183,68 @@ internals.config = {
           },
           second_db: {
             $filter: 'env',
-            production: {
+            test: {
               host: fromEnv('DATABASE_PG__SECOND__HOST'),
-              port: fromEnv('DATABASE_PG__GLOBAL__PORT'),
+              port: {
+                "$env" : "DATABASE_PG__GLOBAL__PORT",
+                "$coerce": "number",
+                "$default": 5432
+              },
               username: fromEnv('DATABASE_PG__SECOND__USER'),
               password: fromEnv('DATABASE_PG__SECOND__PASS'),
               database: fromEnv('DATABASE_PG__SECOND__DB')
             },
-            test: {
+            production: {
               host: fromEnv('DATABASE_PG__SECOND__HOST'),
-              port: fromEnv('DATABASE_PG__GLOBAL__PORT'),
+              port: {
+                "$env" : "DATABASE_PG__GLOBAL__PORT",
+                "$coerce": "number",
+                "$default": 5432
+              },
               username: fromEnv('DATABASE_PG__SECOND__USER'),
               password: fromEnv('DATABASE_PG__SECOND__PASS'),
               database: fromEnv('DATABASE_PG__SECOND__DB')
             },
             development: {
               host: fromEnv('DATABASE_PG__SECOND__HOST'),
-              port: fromEnv('DATABASE_PG__GLOBAL__PORT'),
+              port: {
+                "$env" : "DATABASE_PG__GLOBAL__PORT",
+                "$coerce": "number",
+                "$default": 5432
+              },
+              username: fromEnv('DATABASE_PG__SECOND__USER'),
+              password: fromEnv('DATABASE_PG__SECOND__PASS'),
+              database: fromEnv('DATABASE_PG__SECOND__DB')
+            },
+            staging: {
+              host: fromEnv('DATABASE_PG__SECOND__HOST'),
+              port: {
+                "$env" : "DATABASE_PG__GLOBAL__PORT",
+                "$coerce": "number",
+                "$default": 5432
+              },
+              username: fromEnv('DATABASE_PG__SECOND__USER'),
+              password: fromEnv('DATABASE_PG__SECOND__PASS'),
+              database: fromEnv('DATABASE_PG__SECOND__DB')
+            },
+            localhost: {
+              host: fromEnv('DATABASE_PG__SECOND__HOST'),
+              port: {
+                "$env" : "DATABASE_PG__GLOBAL__PORT",
+                "$coerce": "number",
+                "$default": 5432
+              },
               username: fromEnv('DATABASE_PG__SECOND__USER'),
               password: fromEnv('DATABASE_PG__SECOND__PASS'),
               database: fromEnv('DATABASE_PG__SECOND__DB')
             },
             $default: {
               host: fromEnv('DATABASE_PG__SECOND__HOST'),
-              port: fromEnv('DATABASE_PG__GLOBAL__PORT'),
+              port: {
+                "$env" : "DATABASE_PG__GLOBAL__PORT",
+                "$coerce": "number",
+                "$default": 5432
+              },
               username: fromEnv('DATABASE_PG__SECOND__USER'),
               password: fromEnv('DATABASE_PG__SECOND__PASS'),
               database: fromEnv('DATABASE_PG__SECOND__DB')
@@ -120,13 +254,6 @@ internals.config = {
       mongodb: {
           default: {
             $filter: 'env',
-            production: {
-              host: fromEnv('DATABASE_MONGO__MAILER__HOST'),
-              port: fromEnv('DATABASE_MONGO__GLOBAL__PORT'),
-              username: fromEnv('DATABASE_MONGO__MAILER__USER'),
-              password: fromEnv('DATABASE_MONGO__MAILER__PASS'),
-              database: fromEnv('DATABASE_MONGO__MAILER__DB')
-            },
             test: {
               host: fromEnv('DATABASE_MONGO__MAILER__HOST'),
               port: fromEnv('DATABASE_MONGO__GLOBAL__PORT'),
@@ -134,7 +261,28 @@ internals.config = {
               password: fromEnv('DATABASE_MONGO__MAILER__PASS'),
               database: fromEnv('DATABASE_MONGO__MAILER__DB')
             },
+            production: {
+              host: fromEnv('DATABASE_MONGO__MAILER__HOST'),
+              port: fromEnv('DATABASE_MONGO__GLOBAL__PORT'),
+              username: fromEnv('DATABASE_MONGO__MAILER__USER'),
+              password: fromEnv('DATABASE_MONGO__MAILER__PASS'),
+              database: fromEnv('DATABASE_MONGO__MAILER__DB')
+            },
+            staging: {
+              host: fromEnv('DATABASE_MONGO__MAILER__HOST'),
+              port: fromEnv('DATABASE_MONGO__GLOBAL__PORT'),
+              username: fromEnv('DATABASE_MONGO__MAILER__USER'),
+              password: fromEnv('DATABASE_MONGO__MAILER__PASS'),
+              database: fromEnv('DATABASE_MONGO__MAILER__DB')
+            },
             development: {
+              host: fromEnv('DATABASE_MONGO__MAILER__HOST'),
+              port: fromEnv('DATABASE_MONGO__GLOBAL__PORT'),
+              username: fromEnv('DATABASE_MONGO__MAILER__USER'),
+              password: fromEnv('DATABASE_MONGO__MAILER__PASS'),
+              database: fromEnv('DATABASE_MONGO__MAILER__DB')
+            },
+            localhost: {
               host: fromEnv('DATABASE_MONGO__MAILER__HOST'),
               port: fromEnv('DATABASE_MONGO__GLOBAL__PORT'),
               username: fromEnv('DATABASE_MONGO__MAILER__USER'),
@@ -218,17 +366,6 @@ internals.config = {
       }
     },
     /* ----------------- Authentication -------------- */
-    // authCookie: {
-    //     cookieSecret: process.env.COOKIE_SECRET,
-    //     cookieName: 'Basic-auth'
-    // },
-    // yarCookie: {
-    //     storeBlank: false,
-    //     cookieOptions: {
-    //         password: process.env.YAR_COOKIE_SECRET,
-    //         isSecure: false
-    //     }
-    // },
     jwtAuthOptions: {
       default: {
         key: fromEnv('JWT_SECRET'),
@@ -269,7 +406,7 @@ internals.config = {
         ],
       },
       uiConfig: {
-        docExpansion: 'full',
+        docExpansion: 'none',
         deepLinking: false
       },
       uiHooks: {
@@ -284,10 +421,8 @@ internals.config = {
 
 internals.store = new Confidence.Store(internals.config);
 
-exports.get = function(key) {
-    return internals.store.get(key, internals.criteria);
-};
-
-exports.meta = function(key) {
-    return internals.store.meta(key, internals.criteria);
+export default {
+  get: function(key:string, criteria:any=internals.criteria) {
+    return internals.store.get(key, criteria);
+  }
 };

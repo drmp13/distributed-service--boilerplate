@@ -3,7 +3,7 @@ import ResponseHelper from '@rpc/response';
 import JwtAuthSign from '@authentication/jwt/jwtAuthSign';
 import AuthenticationModel from '../models/authenticationModel';
 
-exports.login = async (request, reply) => {
+const login = async (request, reply) => {
   try {
     const username = request.body.username;
     const password = request.body.password;
@@ -34,10 +34,15 @@ exports.login = async (request, reply) => {
   }
 };
 
-exports.test = async (request, reply) => {
+const test = async (request, reply) => {
   if (!request.auth.isAuthenticated) {
     ResponseHelper.sendResponseHTTP(reply, 401, "failed");
   }else{
     ResponseHelper.sendResponseHTTP(reply, 200, "authenticated",{auth:request.auth.userdata});
   }
 };
+
+export default {
+  login,
+  test
+}

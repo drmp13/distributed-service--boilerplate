@@ -1,10 +1,12 @@
 import Controllers from './controllers';
+import AuthenticationRouteSchema from '@/app/schema/swagger-routes/authentication'
+
 const apiRoutes = async (app, options) => {
   app.route({
     method: 'POST',
     url: '/',
     schema: {
-      tags: ['v1'],
+      tags: [options.tags],
       summary: 'Login Route',
       description: 'Login to get JWT',
       body: {
@@ -33,16 +35,10 @@ const apiRoutes = async (app, options) => {
     method: 'GET',
     url: '/',
     schema: {
-      tags: ['v1'],
+      tags: [options.tags],
       summary: 'Login Route',
       description: 'Test Authentication with JWT',
-      headers: {
-        required: ['authorization'],
-        type: 'object',
-        properties: {
-          authorization: { type: 'string', example: 'Bearer ' }
-        }
-      },
+      headers: AuthenticationRouteSchema.authorizationBearer,
       response: {
         default: {
           description: 'Default response',
@@ -60,4 +56,4 @@ const apiRoutes = async (app, options) => {
 }
 
 
-module.exports = apiRoutes
+export default apiRoutes;

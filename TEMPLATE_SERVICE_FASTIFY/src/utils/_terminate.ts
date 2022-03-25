@@ -14,4 +14,4 @@ const terminate = (server, options = { coredump: false, timeout: 500 }) => {
   }
 }
 
-module.exports = terminate
+export default terminate

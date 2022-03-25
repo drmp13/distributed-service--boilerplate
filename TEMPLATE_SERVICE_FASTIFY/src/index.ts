@@ -9,15 +9,16 @@
 // });
 
 import 'module-alias/register';
-import { build } from '@app';
-import { fromEnv, terminate } from '@utils';
+import * as Server from '@/server';
+import * as Utils from '@/utils';
+import XConfig from '@config/_core'
 
-build()
+Server.build()
   .then(app => {
-    app.listen(fromEnv('PORT'), '0.0.0.0')
+    app.listen(XConfig.get('/application/port'), '0.0.0.0')
       .then(_ => {
         app.swagger()
-        const exitHandler = terminate(app, {
+        const exitHandler = Utils.terminate(app, {
           coredump: false,
           timeout: 500
         })

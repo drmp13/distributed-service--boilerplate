@@ -1,5 +1,7 @@
+import PocRoutes from '../modules/poc/routes';
 import AuthenticationRoutes from '../modules/authentication/routes';
-
+import ApplicationRoutes from '../modules/portalApplication/routes';
+ 
 const apiV1Routes = async (app, options) => {
   app.route({
     method: 'GET',
@@ -27,7 +29,9 @@ const apiV1Routes = async (app, options) => {
     }
   });
 
-  app.register(AuthenticationRoutes, { prefix: '/auth' });
+  app.register(PocRoutes, { prefix: '/poc',tags: 'v1/poc'  });
+  app.register(AuthenticationRoutes, { prefix: '/auth', tags: 'v1/authentication' });
+  app.register(ApplicationRoutes, {prefix: '/application', tags: 'v1/application'})
 
 
 }

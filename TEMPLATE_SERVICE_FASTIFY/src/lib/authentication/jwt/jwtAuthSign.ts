@@ -1,10 +1,22 @@
 'use strict';
 import JWT from 'jsonwebtoken';
-import XConfig from '@config/_core';
+import XConfig from '@/config/_core';
 
 const jwtAuthSignDefault = function jwtAuthSign(userdata: any) {
     let jwtAuthOptions = XConfig.get('/jwtAuthOptions/default');
-    let payload = {
+
+    type jwtPayload = {
+      userdata: any;
+      aud?: string;
+      iss?: string;
+      sub?: boolean;
+      nbf?: number;
+      exp?: number;
+      maxAgeSec?: number;
+      timeSkewSec?: number;
+    };
+
+    let payload: jwtPayload = {
       userdata: userdata
     }
     if(jwtAuthOptions.verify!=false){
@@ -27,6 +39,6 @@ const jwtAuthSignDefault = function jwtAuthSign(userdata: any) {
 
 }
 
-module.exports = {
+export default {
   default: jwtAuthSignDefault
 };

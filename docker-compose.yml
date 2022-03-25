@@ -1,57 +1,57 @@
 version: '2.1'
 services:
-  # template_service_hapi:
-  #   container_name: template_service_hapi
-  #   depends_on:
-  #     template_service_db:
-  #       condition: service_healthy
-  #     template_service_db2:
-  #       condition: service_healthy
-  #   build: ./TEMPLATE_SERVICE_HAPI
-  #   command:  'npm start'
-  #   volumes:
-  #      - ./TEMPLATE_SERVICE_HAPI:/usr/src/app
-  #      - ${ELK_CERTS_PATH}:/usr/src/app/config/ssl-elk
-  #      - /usr/src/app/node_modules/
-  #   restart: always
-  #   ports:
-  #     - "${SERVICE_TEMPLATE__HAPI__EXPOSE_PORT}:${GLOBAL__SERVICE_API__PORT}"
-  #   expose:
-  #     - "${SERVICE_TEMPLATE__HAPI__EXPOSE_PORT}"
-  #   environment:
-  #     - NODE_ENV=${NODE_ENV}
-  #     - EXPOSE_PORT=${SERVICE_TEMPLATE__HAPI__EXPOSE_PORT}
-  #     - EXPOSE_URL=${SERVICE_TEMPLATE__HAPI__EXPOSE_URL}
-  #     - EXPOSE_PROTOCOL=${SERVICE_TEMPLATE__HAPI__EXPOSE_PROTOCOL}
-  #     - PORT=${GLOBAL__SERVICE_API__PORT}
-  #     - JWT_SECRET=${JWT_SECRET}
-  #     - DATABASE_PG__GLOBAL__PORT=${GLOBAL__SERVICE_DB_PG__PORT}
-  #     - DATABASE_PG__DEFAULT__HOST=${SERVICE_TEMPLATE__DATABASE_PG__HOST}
-  #     - DATABASE_PG__DEFAULT__USER=${SERVICE_TEMPLATE__DATABASE_PG__USER}
-  #     - DATABASE_PG__DEFAULT__PASS=${SERVICE_TEMPLATE__DATABASE_PG__PASS}
-  #     - DATABASE_PG__DEFAULT__PORT=${SERVICE_TEMPLATE__DATABASE_PG__PORT}
-  #     - DATABASE_PG__DEFAULT__DB=${SERVICE_TEMPLATE__DATABASE_PG__DB}
-  #     - DATABASE_PG__SECOND__HOST=${SERVICE_TEMPLATE__DATABASE_PG2__HOST}
-  #     - DATABASE_PG__SECOND__USER=${SERVICE_TEMPLATE__DATABASE_PG2__USER}
-  #     - DATABASE_PG__SECOND__PASS=${SERVICE_TEMPLATE__DATABASE_PG2__PASS}
-  #     - DATABASE_PG__SECOND__PORT=${SERVICE_TEMPLATE__DATABASE_PG2__PORT}
-  #     - DATABASE_PG__SECOND__DB=${SERVICE_TEMPLATE__DATABASE_PG2__DB}
-  #     - DATABASE_MONGO__GLOBAL__PORT=${GLOBAL__SERVICE_DB_MONGO__PORT}
-  #     - DATABASE_MONGO__MAILER__HOST=${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__HOST}
-  #     - DATABASE_MONGO__MAILER__USER=${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__USER}
-  #     - DATABASE_MONGO__MAILER__PASS=${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__PASS}
-  #     - DATABASE_MONGO__MAILER__PORT=${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__PORT}
-  #     - DATABASE_MONGO__MAILER__DB=${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__DB}
-  #     - MESSAGE_BROKER__HOST=${SERVICE_TEMPLATE__MESSAGE_BROKER__HOST}
-  #     - MESSAGE_BROKER__PORT=${SERVICE_TEMPLATE__MESSAGE_BROKER__PORT}
-  #     - MESSAGE_BROKER__USER=${SERVICE_TEMPLATE__MESSAGE_BROKER__USER}
-  #     - MESSAGE_BROKER__PASS=${SERVICE_TEMPLATE__MESSAGE_BROKER__PASS}
-  #     - ELK_STACK_APM_SERVER_URL=https://${ELK_APM_SERVER_HOST}:${ELK_APM_SERVER_PORT}
-  #     - ELK_STACK_ELASTIC_TOKEN=${ELK_APM_SERVER_TOKEN}
-  #     - ELK_STACK_CA_CERT_PATH=config/ssl-elk/ca/ca.crt
-  #   networks:
-  #     PROJECT_TEMPLATE_NETWORK:
-  #       ipv4_address: ${SERVICE_TEMPLATE__HAPI__HOST}
+  template_service_hapi:
+    container_name: template_service_hapi
+    depends_on:
+      template_service_db:
+        condition: service_healthy
+      template_service_db2:
+        condition: service_healthy
+    build: ./TEMPLATE_SERVICE_HAPI
+    command:  'npm start'
+    volumes:
+       - ./TEMPLATE_SERVICE_HAPI:/usr/src/app
+       - ${ELK_CERTS_PATH}:/usr/src/app/config/ssl-elk
+       - /usr/src/app/node_modules/
+    restart: always
+    ports:
+      - "${SERVICE_TEMPLATE__HAPI__EXPOSE_PORT}:${GLOBAL__SERVICE_API__PORT}"
+    expose:
+      - "${SERVICE_TEMPLATE__HAPI__EXPOSE_PORT}"
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - EXPOSE_PORT=${SERVICE_TEMPLATE__HAPI__EXPOSE_PORT}
+      - EXPOSE_URL=${SERVICE_TEMPLATE__HAPI__EXPOSE_URL}
+      - EXPOSE_PROTOCOL=${SERVICE_TEMPLATE__HAPI__EXPOSE_PROTOCOL}
+      - PORT=${GLOBAL__SERVICE_API__PORT}
+      - JWT_SECRET=${JWT_SECRET}
+      - DATABASE_PG__GLOBAL__PORT=${GLOBAL__SERVICE_DB_PG__PORT}
+      - DATABASE_PG__DEFAULT__HOST=${SERVICE_TEMPLATE__DATABASE_PG__HOST}
+      - DATABASE_PG__DEFAULT__USER=${SERVICE_TEMPLATE__DATABASE_PG__USER}
+      - DATABASE_PG__DEFAULT__PASS=${SERVICE_TEMPLATE__DATABASE_PG__PASS}
+      - DATABASE_PG__DEFAULT__PORT=${SERVICE_TEMPLATE__DATABASE_PG__PORT}
+      - DATABASE_PG__DEFAULT__DB=${SERVICE_TEMPLATE__DATABASE_PG__DB}
+      - DATABASE_PG__SECOND__HOST=${SERVICE_TEMPLATE__DATABASE_PG2__HOST}
+      - DATABASE_PG__SECOND__USER=${SERVICE_TEMPLATE__DATABASE_PG2__USER}
+      - DATABASE_PG__SECOND__PASS=${SERVICE_TEMPLATE__DATABASE_PG2__PASS}
+      - DATABASE_PG__SECOND__PORT=${SERVICE_TEMPLATE__DATABASE_PG2__PORT}
+      - DATABASE_PG__SECOND__DB=${SERVICE_TEMPLATE__DATABASE_PG2__DB}
+      - DATABASE_MONGO__GLOBAL__PORT=${GLOBAL__SERVICE_DB_MONGO__PORT}
+      - DATABASE_MONGO__MAILER__HOST=${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__HOST}
+      - DATABASE_MONGO__MAILER__USER=${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__USER}
+      - DATABASE_MONGO__MAILER__PASS=${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__PASS}
+      - DATABASE_MONGO__MAILER__PORT=${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__PORT}
+      - DATABASE_MONGO__MAILER__DB=${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__DB}
+      - MESSAGE_BROKER__HOST=${SERVICE_TEMPLATE__MESSAGE_BROKER__HOST}
+      - MESSAGE_BROKER__PORT=${SERVICE_TEMPLATE__MESSAGE_BROKER__PORT}
+      - MESSAGE_BROKER__USER=${SERVICE_TEMPLATE__MESSAGE_BROKER__USER}
+      - MESSAGE_BROKER__PASS=${SERVICE_TEMPLATE__MESSAGE_BROKER__PASS}
+      - ELK_STACK_APM_SERVER_URL=https://${ELK_APM_SERVER_HOST}:${ELK_APM_SERVER_PORT}
+      - ELK_STACK_ELASTIC_TOKEN=${ELK_APM_SERVER_TOKEN}
+      - ELK_STACK_CA_CERT_PATH=config/ssl-elk/ca/ca.crt
+    networks:
+      PROJECT_TEMPLATE_NETWORK:
+        ipv4_address: ${SERVICE_TEMPLATE__HAPI__HOST}
   template_service_fastify:
     container_name: template_service_fastify
     depends_on:
@@ -63,7 +63,7 @@ services:
     command:  'npm start'
     volumes:
        - ./TEMPLATE_SERVICE_FASTIFY:/usr/src/app
-       - ${ELK_CERTS_PATH}:/usr/src/app/certificate/ssl-elk
+       # - ${ELK_CERTS_PATH}:/usr/src/app/certificate/ssl-elk
        - /usr/src/app/node_modules/
     restart: always
     ports:
@@ -151,109 +151,109 @@ services:
     networks:
       PROJECT_TEMPLATE_NETWORK:
         ipv4_address: ${SERVICE_TEMPLATE__DATABASE_PG2__HOST}
-  # service_mongo_mail:
-  #   container_name: service_mongo_mail
-  #   ports:
-  #     - ${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__PORT}:${GLOBAL__SERVICE_DB_MONGO__PORT}
-  #   image: mongo:5.0
-  #   environment:
-  #     MONGO_INITDB_ROOT_USERNAME: ${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__USER}
-  #     MONGO_INITDB_ROOT_PASSWORD: ${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__PASS}
-  #   volumes:
-  #     - ./MONGO-MAILER/MONGO-CONFIG:/scripts
-  #     - ./MONGO-MAILER/DATA:/data/db
-  #   expose:
-  #     - "${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__PORT}"
-  #   networks:
-  #     PROJECT_TEMPLATE_NETWORK:
-  #       ipv4_address: ${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__HOST}
-  # mb_rabbitmq:
-  #   container_name: 'mb_rabbitmq'
-  #   image: rabbitmq:3-management-alpine
-  #   environment:
-  #           - RABBITMQ_DEFAULT_USER=${SERVICE_TEMPLATE__MESSAGE_BROKER__USER}
-  #           - RABBITMQ_DEFAULT_PASS=${SERVICE_TEMPLATE__MESSAGE_BROKER__PASS}
-  #   ports:
-  #       - ${SERVICE_TEMPLATE__MESSAGE_BROKER__PORT}:${SERVICE_TEMPLATE__MESSAGE_BROKER__PORT}
-  #       - ${SERVICE_TEMPLATE__MESSAGE_BROKER__PORT_ADMIN}:${SERVICE_TEMPLATE__MESSAGE_BROKER__PORT_ADMIN}
-  #   expose:
-  #     - "${SERVICE_TEMPLATE__MESSAGE_BROKER__PORT_ADMIN}"
-  #   volumes:
-  #       - ./SERVER_RABBITMQ/DATA/:/var/lib/rabbitmq/
-  #       - ./SERVER_RABBITMQ/LOG/:/var/log/rabbitmq
-  #   networks:
-  #     PROJECT_TEMPLATE_NETWORK:
-  #       ipv4_address: ${SERVICE_TEMPLATE__MESSAGE_BROKER__HOST}
-  cert_setup:
-    image: ${ELK_ELASTICSEARCH_IMAGE}
-    container_name: cert_setup
+  service_mongo_mail:
+    container_name: service_mongo_mail
+    ports:
+      - ${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__PORT}:${GLOBAL__SERVICE_DB_MONGO__PORT}
+    image: mongo:5.0
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__PASS}
     volumes:
-      - ${ELK_CERTS_PATH}:/usr/share/elasticsearch/config/certs
-    user: "0"
-    command: >
-      bash -c '
-        if [ x${ELK_ELASTICSEARCH_PASSWORD} == x ]; then
-          echo "Set the ELK_ELASTICSEARCH_PASSWORD environment variable in the .env file";
-          exit 1;
-        elif [ x${ELK_KIBANA_PASSWORD} == x ]; then
-          echo "Set the ELK_KIBANA_PASSWORD environment variable in the .env file";
-          exit 1;
-        fi;
-        if [ ! -f certs/ca.zip ]; then
-          echo "Creating CA";
-          bin/elasticsearch-certutil ca --silent --pem -out config/certs/ca.zip;
-          unzip config/certs/ca.zip -d config/certs;
-        fi;
-        if [ ! -f certs/certs.zip ]; then
-          echo "Creating certs";
-          echo -ne \
-          "instances:\n"\
-          "  - name: ${ELK_ELASTICSEARCH_NODE_01}\n"\
-          "    dns:\n"\
-          "      - ${ELK_ELASTICSEARCH_NODE_01}\n"\
-          "      - localhost\n"\
-          "    ip:\n"\
-          "      - 127.0.0.1\n"\
-          "  - name: ${ELK_ELASTICSEARCH_NODE_02}\n"\
-          "    dns:\n"\
-          "      - ${ELK_ELASTICSEARCH_NODE_02}\n"\
-          "      - localhost\n"\
-          "    ip:\n"\
-          "      - 127.0.0.1\n"\
-          "  - name: ${ELK_ELASTICSEARCH_NODE_03}\n"\
-          "    dns:\n"\
-          "      - ${ELK_ELASTICSEARCH_NODE_03}\n"\
-          "      - localhost\n"\
-          "    ip:\n"\
-          "      - 127.0.0.1\n"\
-          "  - name: ${ELK_APM_SERVER_NODE}\n"\
-          "    dns:\n"\
-          "      - ${ELK_APM_SERVER_NODE}\n"\
-          "      - localhost\n"\
-          "    ip:\n"\
-          "      - 127.0.0.1\n"\
-          > config/certs/instances.yml;
-          bin/elasticsearch-certutil cert --silent --pem -out config/certs/certs.zip --in config/certs/instances.yml --ca-cert config/certs/ca/ca.crt --ca-key config/certs/ca/ca.key;
-          unzip config/certs/certs.zip -d config/certs;
-        fi;
-        echo "Setting file permissions"
-        chown -R root:root config/certs;
-        find . -type d -exec chmod 750 \{\} \;;
-        find . -type f -exec chmod 640 \{\} \;;
-        echo "Waiting for Elasticsearch availability";
-        until curl -s --cacert config/certs/ca/ca.crt https://${ELK_ELASTICSEARCH_NODE_01}:${ELK_ELASTIC01_PORT} | grep -q "missing authentication credentials"; do sleep 30; done;
-        echo "Setting ${ELK_KIBANA_USERNAME} password";
-        until curl -s -X POST --cacert config/certs/ca/ca.crt -u ${ELK_ELASTICSEARCH_USERNAME}:${ELK_ELASTICSEARCH_PASSWORD} -H "Content-Type: application/json" https://${ELK_ELASTICSEARCH_NODE_01}:${ELK_ELASTIC01_PORT}/_security/user/${ELK_KIBANA_USERNAME}/_password -d "{\"password\":\"${ELK_KIBANA_PASSWORD}\"}" | grep -q "^{}"; do sleep 10; done;
-        echo "All done!";
-      '
-    healthcheck:
-      test: ["CMD-SHELL", "[ -f config/certs/${ELK_ELASTICSEARCH_NODE_01}/${ELK_ELASTICSEARCH_NODE_01}.crt ]"]
-      interval: 1s
-      timeout: 5s
-      retries: 120
+      - ./MONGO-MAILER/MONGO-CONFIG:/scripts
+      - ./MONGO-MAILER/DATA:/data/db
+    expose:
+      - "${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__PORT}"
     networks:
       PROJECT_TEMPLATE_NETWORK:
-        ipv4_address: ${CERT_SETUP_HOST}
+        ipv4_address: ${SERVICE_TEMPLATE__DATABASE_MONGO_MAIL__HOST}
+  mb_rabbitmq:
+    container_name: 'mb_rabbitmq'
+    image: rabbitmq:3-management-alpine
+    environment:
+            - RABBITMQ_DEFAULT_USER=${SERVICE_TEMPLATE__MESSAGE_BROKER__USER}
+            - RABBITMQ_DEFAULT_PASS=${SERVICE_TEMPLATE__MESSAGE_BROKER__PASS}
+    ports:
+        - ${SERVICE_TEMPLATE__MESSAGE_BROKER__PORT}:${SERVICE_TEMPLATE__MESSAGE_BROKER__PORT}
+        - ${SERVICE_TEMPLATE__MESSAGE_BROKER__PORT_ADMIN}:${SERVICE_TEMPLATE__MESSAGE_BROKER__PORT_ADMIN}
+    expose:
+      - "${SERVICE_TEMPLATE__MESSAGE_BROKER__PORT_ADMIN}"
+    volumes:
+        - ./SERVER_RABBITMQ/DATA/:/var/lib/rabbitmq/
+        - ./SERVER_RABBITMQ/LOG/:/var/log/rabbitmq
+    networks:
+      PROJECT_TEMPLATE_NETWORK:
+        ipv4_address: ${SERVICE_TEMPLATE__MESSAGE_BROKER__HOST}
+  # cert_setup:
+  #   image: ${ELK_ELASTICSEARCH_IMAGE}
+  #   container_name: cert_setup
+  #   volumes:
+  #     - ${ELK_CERTS_PATH}:/usr/share/elasticsearch/config/certs
+  #   user: "0"
+  #   command: >
+  #     bash -c '
+  #       if [ x${ELK_ELASTICSEARCH_PASSWORD} == x ]; then
+  #         echo "Set the ELK_ELASTICSEARCH_PASSWORD environment variable in the .env file";
+  #         exit 1;
+  #       elif [ x${ELK_KIBANA_PASSWORD} == x ]; then
+  #         echo "Set the ELK_KIBANA_PASSWORD environment variable in the .env file";
+  #         exit 1;
+  #       fi;
+  #       if [ ! -f certs/ca.zip ]; then
+  #         echo "Creating CA";
+  #         bin/elasticsearch-certutil ca --silent --pem -out config/certs/ca.zip;
+  #         unzip config/certs/ca.zip -d config/certs;
+  #       fi;
+  #       if [ ! -f certs/certs.zip ]; then
+  #         echo "Creating certs";
+  #         echo -ne \
+  #         "instances:\n"\
+  #         "  - name: ${ELK_ELASTICSEARCH_NODE_01}\n"\
+  #         "    dns:\n"\
+  #         "      - ${ELK_ELASTICSEARCH_NODE_01}\n"\
+  #         "      - localhost\n"\
+  #         "    ip:\n"\
+  #         "      - 127.0.0.1\n"\
+  #         "  - name: ${ELK_ELASTICSEARCH_NODE_02}\n"\
+  #         "    dns:\n"\
+  #         "      - ${ELK_ELASTICSEARCH_NODE_02}\n"\
+  #         "      - localhost\n"\
+  #         "    ip:\n"\
+  #         "      - 127.0.0.1\n"\
+  #         "  - name: ${ELK_ELASTICSEARCH_NODE_03}\n"\
+  #         "    dns:\n"\
+  #         "      - ${ELK_ELASTICSEARCH_NODE_03}\n"\
+  #         "      - localhost\n"\
+  #         "    ip:\n"\
+  #         "      - 127.0.0.1\n"\
+  #         "  - name: ${ELK_APM_SERVER_NODE}\n"\
+  #         "    dns:\n"\
+  #         "      - ${ELK_APM_SERVER_NODE}\n"\
+  #         "      - localhost\n"\
+  #         "    ip:\n"\
+  #         "      - 127.0.0.1\n"\
+  #         > config/certs/instances.yml;
+  #         bin/elasticsearch-certutil cert --silent --pem -out config/certs/certs.zip --in config/certs/instances.yml --ca-cert config/certs/ca/ca.crt --ca-key config/certs/ca/ca.key;
+  #         unzip config/certs/certs.zip -d config/certs;
+  #       fi;
+  #       echo "Setting file permissions"
+  #       chown -R root:root config/certs;
+  #       find . -type d -exec chmod 750 \{\} \;;
+  #       find . -type f -exec chmod 640 \{\} \;;
+  #       echo "Waiting for Elasticsearch availability";
+  #       until curl -s --cacert config/certs/ca/ca.crt https://${ELK_ELASTICSEARCH_NODE_01}:${ELK_ELASTIC01_PORT} | grep -q "missing authentication credentials"; do sleep 30; done;
+  #       echo "Setting ${ELK_KIBANA_USERNAME} password";
+  #       until curl -s -X POST --cacert config/certs/ca/ca.crt -u ${ELK_ELASTICSEARCH_USERNAME}:${ELK_ELASTICSEARCH_PASSWORD} -H "Content-Type: application/json" https://${ELK_ELASTICSEARCH_NODE_01}:${ELK_ELASTIC01_PORT}/_security/user/${ELK_KIBANA_USERNAME}/_password -d "{\"password\":\"${ELK_KIBANA_PASSWORD}\"}" | grep -q "^{}"; do sleep 10; done;
+  #       echo "All done!";
+  #     '
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "[ -f config/certs/${ELK_ELASTICSEARCH_NODE_01}/${ELK_ELASTICSEARCH_NODE_01}.crt ]"]
+  #     interval: 1s
+  #     timeout: 5s
+  #     retries: 120
+  #   networks:
+  #     PROJECT_TEMPLATE_NETWORK:
+  #       ipv4_address: ${CERT_SETUP_HOST}
   # es01:
   #   image: ${ELK_ELASTICSEARCH_IMAGE}
   #   container_name: ${ELK_ELASTICSEARCH_NODE_01}
